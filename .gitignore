@@ -1,0 +1,21 @@
+# KiCad project-local user settings (window layouts, zoom levels)
+*.kicad_prl
+
+# KiCad footprint info cache & local library tables
+fp-info-cache
+fp-lib-table
+sym-lib-table
+
+# KiCad automatic project backups
+*-backups/
+*.zip
+
+# KiCad DRC/ERC reports and temporary files
+*.kicad_dru
+*.lck
+*.tmp
+_saved-*
+
+# Gerber & manufacturing export outputs (optional: un-comment if you generate output folders)
+# /gerbers/
+# /fab/

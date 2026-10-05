@@ -61,8 +61,8 @@ class Params:
     retreat_max: float = 12.0
     backup_dist: float = 0.30       # straight reverse before turning round
     lookahead: float = 0.70
-    v_max: float = 0.90             # m/s (the diff drive brakes at 2 m/s^2: 0.12 m from full speed)
-    v_min: float = 0.30
+    v_max: float = 1.50             # m/s (the diff drive brakes at 2 m/s^2: 0.12 m from full speed)
+    v_min: float = 0.60
     w_max: float = 2.0              # rad/s
     rotate_in_place: float = 1.0    # heading error (rad) above which we turn on the spot
     rotate_exit: float = 0.5        # ...and below which we drive again (hysteresis: no chattering)

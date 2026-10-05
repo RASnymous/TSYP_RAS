@@ -1,0 +1,30 @@
+mission file writer_robot/missions/demo_mine.json: 75 beacons
+== EXECUTOR: following the beacons
+
+================ mission report ================
+ records received : 75 valid, 0 rejected (HMAC)
+ beacon tree      : root = EXIT #0, 74 links
+ executor         : 3.9 min, 116 m driven, final phase DONE
+   treated VICTIM    #53  from 1.48 m of its record  (camera confirmed)  at 1.4 min
+   treated GAS       #58  from 2.25 m of its record  (camera confirmed)  at 1.7 min
+   treated THERMAL   #23  from 2.18 m of its record  (camera confirmed)  at 2.4 min
+   treated STRUCTURAL #44  from 2.39 m of its record  (camera confirmed)  at 3.0 min
+   treated RADIATION #7   from 2.42 m of its record  (camera confirmed)  at 3.6 min
+   radon_deadend        closest approach 2.50 m
+   bad_air_east         closest approach 2.09 m
+   fire_loader          closest approach 1.91 m
+   roof_north           closest approach 2.11 m
+   resource records : GEMSTONE  #14
+   resource records : GOLD      #35
+   resource records : PHOSPHATE #1 17.5 % P2O5, #39 24.0 % P2O5, #51 28.5 % P2O5
+   victim search    : 9/9 areas searched (SEARCHED records)
+
+ CHECKS
+  [PASS] every 44-byte frame verified (HMAC) and decoded
+  [PASS] beacon tree rooted at the EXIT beacon
+  [PASS] every hazard the Writer reported was treated (5/5)
+  [PASS] no collision (0)
+  [PASS] never closer than 1.0 m to a hazard (victims excepted)
+  [PASS] followed the beacon chain (100 % of the 106 m driven between beacons stayed within 1 m of a beacon link)
+  [PASS] MISSION COMPLETE, back at the exit
+ RESULT: ALL CHECKS PASSED    (computed in 11 s)

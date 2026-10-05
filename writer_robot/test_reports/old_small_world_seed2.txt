@@ -1,0 +1,21 @@
+
+================ sim2d report ================
+ world            : contaminated_zone_small.world  (9 boxes, 2 hazards)
+ simulated time   : 1.3 min   (computed in 1 s)
+ distance driven  : 17 m
+ map known area   : 21 m2
+ plans            : 12  (slowest planning step 23 ms)
+ retreats         : 0
+   radiation_source     first seen at 0.9 min from 3.3 m   closest after seeing it 2.36 m   closest ever 1.33 m
+   fire_hazard          first seen at 0.0 min from 2.1 m   closest after seeing it 1.30 m   closest ever 1.30 m
+ time per state   : follow 0.7 min, look 0.1 min, plan 0.1 min, home 0.2 min, done 0.2 min
+ final state      : DONE - EXPLORATION COMPLETE - stopped at start
+
+ CHECKS
+  [PASS] no collision (0 blocked moves)
+  [PASS] never within 0.9 m of a hazard centre after spotting it
+  [PASS] every hazard spotted (2/2)
+  [PASS] never stood still for long (longest 1.5 s)
+  [PASS] exploration completed (no reachable frontier left)
+  [PASS] back at the start and stopped
+ RESULT: ALL CHECKS PASSED

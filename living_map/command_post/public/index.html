@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Living Map · Command Post</title>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- ============================ TOP BAR ============================ -->
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="16" cy="16" r="3.2" fill="currentColor"/>
+        <path d="M16 4 A12 12 0 0 1 26.4 10 L18.8 14.4 A3.4 3.4 0 0 0 16 12.6 Z" fill="currentColor" opacity=".85"/>
+        <path d="M26.4 22 A12 12 0 0 1 5.6 22 L13.2 17.6 A3.4 3.4 0 0 0 18.8 17.6 Z" fill="currentColor" opacity=".85"/>
+      </svg>
+      <div>
+        <div class="brand-title">LIVING MAP <span>· COMMAND POST</span></div>
+        <div class="brand-sub" id="brandSub">TSYP14 · RAS × AESS · Contaminated zone</div>
+      </div>
+    </div>
+
+    <div class="health" id="health" aria-label="Gateway network health">
+      <span class="health-label">Gateways</span>
+      <div class="health-list" id="healthList"></div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="link-badge" id="linkBadge"><i></i><span>CONNECTING</span></div>
+      <div class="clock">
+        <div id="clock">--:--:--</div>
+        <div class="clock-sub" id="uptime">session 00:00</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================ MAIN ============================ -->
+  <main class="layout">
+    <section class="map-wrap">
+      <div id="map"></div>
+
+      <div class="map-tools">
+        <button class="tool" id="btnFit" title="Fit all beacons">⤢ <span>Fit</span></button>
+        <button class="tool" id="btnFollow" title="Follow the Executor">◎ <span>Follow</span></button>
+        <button class="tool active" id="btnLinks" title="Show next-hop links (the way out)">⇢ <span>Routes</span></button>
+        <button class="tool active" id="btnSpheres" title="Show the distance each gateway measured to the robots (the GPS-like spheres, cut at robot height)">◍ <span>Spheres</span></button>
+        <button class="tool active mine-only" id="btnRes" title="Show the resources: phosphate seams (grade in % P2O5) and mineral finds">⛏ <span>Resources</span></button>
+        <button class="tool active mine-only" id="btnSearch" title="Show the victim search: areas searched (green), with a victim (pink), not yet (grey)">✓ <span>Search</span></button>
+      </div>
+
+      <div class="legend">
+        <div class="legend-grid">
+          <div class="legend-row" data-legend="victim"><i class="dot" style="--c:var(--victim)"></i>Victim</div>
+          <div class="legend-row" data-legend="gas"><i class="dot" style="--c:var(--gas)"></i>Gas</div>
+          <div class="legend-row" data-legend="radiation"><i class="dot" style="--c:var(--rad)"></i>Radiation</div>
+          <div class="legend-row" data-legend="thermal"><i class="dot" style="--c:var(--thermal)"></i>Thermal</div>
+          <div class="legend-row" data-legend="structural"><i class="dot" style="--c:var(--struct)"></i>Collapse risk</div>
+          <div class="legend-row" data-legend="obstruction"><i class="dot" style="--c:var(--obst)"></i>Obstruction</div>
+          <div class="legend-row"><i class="dot" style="--c:var(--exit)"></i>Exit</div>
+          <div class="legend-row"><i class="dot" style="--c:var(--trail)"></i>Trail beacon</div>
+        </div>
+        <div class="legend-grid mine-only">
+          <div class="legend-row"><i class="dot" style="--c:var(--phos)"></i>Phosphate seam</div>
+          <div class="legend-row"><i class="dot" style="--c:var(--gold)"></i>Gold find</div>
+          <div class="legend-row"><i class="dot" style="--c:var(--gem)"></i>Gemstone find</div>
+          <div class="legend-row"><i class="dot" style="--c:var(--searched)"></i>Area searched</div>
+          <div class="legend-row"><i class="zone-sw ok"></i>Searched, nobody</div>
+          <div class="legend-row"><i class="zone-sw vic"></i>Victim found</div>
+          <div class="legend-row"><i class="zone-sw"></i>Not searched yet</div>
+          <div class="legend-row"><i class="pillar-sw"></i>Rock / pillar</div>
+        </div>
+        <div class="legend-row"><i class="hop"></i>Next hop (way out)</div>
+        <div class="legend-row"><i class="ring lost"></i>Lost? · <i class="ring stale"></i>route marker only</div>
+        <div class="legend-row"><i class="ring unconf"></i>Heard by 1 gateway only (not confirmed)</div>
+        <div class="legend-row"><i class="arrow"></i>Executor · <i class="arrow writer"></i>Writer</div>
+        <div class="legend-row ona-only"><i class="antenna"></i>Gateway · <i class="sphere"></i>its measured distance</div>
+        <div class="legend-row ona-only"><i class="ellipse"></i>95 % area · <i class="ghost"></i>robot's own estimate</div>
+        <div class="legend-ttl">
+          <span>Confidence</span><div class="ttl-grad"></div><span class="muted">fresh → aged</span>
+        </div>
+      </div>
+
+      <div class="plan-banner" id="planBanner">
+        Selecting waypoints — click pins on the map · <b>Esc</b> to finish
+      </div>
+    </section>
+
+    <aside class="side">
+      <!-- stats -->
+      <div class="stats">
+        <div class="stat"><div class="stat-v" id="stTotal">0</div><div class="stat-k">Beacons</div></div>
+        <div class="stat victim"><div class="stat-v" id="stVictim">0</div><div class="stat-k">Victims</div></div>
+        <div class="stat hazard"><div class="stat-v" id="stHazard">0</div><div class="stat-k">Hazards</div></div>
+        <div class="stat lost" id="stLostTile"><div class="stat-v" id="stLost">0</div><div class="stat-k">Lost beacons</div></div>
+      </div>
+
+      <!-- site (the Gafsa mine): victim search by area, hazards with their measured values, resources -->
+      <div class="panel site" id="sitePanel" hidden>
+        <div class="panel-head">
+          <span class="panel-title">Gafsa mine</span>
+          <span class="chip site-chip" id="siteName">site</span>
+        </div>
+        <div class="site-body">
+          <div class="site-h">Victim search <span class="muted small" id="searchCount"></span></div>
+          <div class="progress search"><div id="searchBar"></div></div>
+          <div class="zone-list" id="zoneList"></div>
+          <div class="site-h">Dangers <span class="muted small">measured values</span></div>
+          <div class="site-list" id="hazList"></div>
+          <div class="site-h">Resources <span class="muted small">marked, never avoided</span></div>
+          <div class="site-list" id="resList"></div>
+        </div>
+      </div>
+
+      <!-- outside network area: 3 gateways, 2-of-3 vote, uplink, robot positioning -->
+      <div class="panel ona" id="onaPanel">
+        <button class="panel-head collapsible" id="onaToggle" aria-expanded="true">
+          <span class="panel-title">Outside network area</span>
+          <span class="link-chip" id="onaLink"><i></i><span>not heard</span></span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="ona-body" id="onaBody">
+          <div class="ona-empty" id="onaEmpty">
+            No ONA heard yet. Beacons can still arrive straight from one gateway bridge, without the 2-of-3 vote.
+          </div>
+          <div class="ona-content" id="onaContent" hidden>
+            <div class="ona-gws" id="onaGws"></div>
+            <div class="ona-kv">
+              <span class="k">Records</span><span class="v" id="onaRec">—</span>
+              <span class="k">Uplink</span><span class="v" id="onaQueue">—</span>
+              <span class="k">Frame check</span><span class="v" id="onaCal">—</span>
+              <span class="k">Briefing</span><span class="v" id="onaMission">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- executor -->
+      <div class="panel exec" id="execPanel">
+        <div class="panel-head">
+          <span class="panel-title">Executor robot</span>
+          <span class="chip" id="execStatus">no signal</span>
+        </div>
+        <div class="exec-grid">
+          <div><span class="k">Lat</span><span class="v mono" id="execLat">—</span></div>
+          <div><span class="k">Lon</span><span class="v mono" id="execLon">—</span></div>
+          <div><span class="k">Heading</span><span class="v mono" id="execHdg">—</span></div>
+          <div><span class="k">Last fix</span><span class="v mono" id="execAge">—</span></div>
+        </div>
+        <div class="robot-ona" id="execOna" hidden></div>
+      </div>
+
+      <!-- writer (only when the ONA reports it) -->
+      <div class="panel exec writer" id="writerPanel" hidden>
+        <div class="panel-head">
+          <span class="panel-title">Writer robot</span>
+          <span class="chip" id="writerStatus">no signal</span>
+        </div>
+        <div class="robot-ona" id="writerOna"></div>
+      </div>
+
+      <!-- feed -->
+      <div class="panel feed-panel">
+        <div class="panel-head">
+          <span class="panel-title">Live event feed</span>
+          <span class="muted small" id="feedCount">0 events</span>
+        </div>
+        <ul class="feed" id="feed">
+          <li class="feed-empty" id="feedEmpty">
+            <div class="radar"></div>
+            Waiting for beacon events…
+          </li>
+        </ul>
+      </div>
+
+      <!-- mission planner -->
+      <div class="panel planner" id="planner">
+        <button class="panel-head collapsible" id="plannerToggle" aria-expanded="true">
+          <span class="panel-title">Mission planner</span>
+          <span class="muted small" id="wpCount">0 waypoints</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="planner-body" id="plannerBody">
+          <div class="planner-actions">
+            <button class="btn" id="btnPlan">＋ Select on map</button>
+            <button class="btn ghost" id="btnClear" disabled>Clear</button>
+          </div>
+          <ol class="wp-list" id="wpList"></ol>
+          <p class="wp-empty" id="wpEmpty">
+            Pick 2–3 beacons for the Executor to visit. Use <b>Select on map</b>, or open a pin and press <b>Add to mission</b>. Drag to reorder.
+          </p>
+          <label class="chk" title="Unticked: the Executor stays at the last target and waits for the next briefing">
+            <input type="checkbox" id="chkReturn" checked> back to the exit afterwards
+          </label>
+          <button class="btn primary dispatch" id="btnDispatch" disabled>
+            <span>Dispatch mission</span><span class="arrow-r">→</span>
+          </button>
+          <button class="btn ghost danger" id="btnAbort" title="Signed ABORT briefing: the Executor stops what it does and follows the beacons back to the exit">
+            Call the Executor back
+          </button>
+          <div class="muted small" id="lastMission"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+== WRITER: exploring and dropping beacons
+   7.7 min, 208 m, state DONE; 75 beacons: 1 EXIT, 1 GAS, 1 GEMSTONE, 1 GOLD, 3 PHOSPHATE, 1 RADIATION, 9 SEARCHED, 1 STRUCTURAL, 1 THERMAL, 1 VICTIM, 55 WAYPOINT
+== EXECUTOR: following the beacons
+
+================ mission report ================
+ records received : 75 valid, 0 rejected (HMAC)
+ beacon tree      : root = EXIT #0, 74 links
+ executor         : 4.7 min, 145 m driven, final phase DONE
+   treated VICTIM    #27  from 1.42 m of its record  (camera confirmed)  at 1.4 min
+   treated STRUCTURAL #66  from 2.46 m of its record  (camera confirmed)  at 1.8 min
+   treated GAS       #36  from 2.25 m of its record  (camera confirmed)  at 2.4 min
+   treated THERMAL   #43  from 1.91 m of its record  (camera confirmed)  at 2.7 min
+   treated RADIATION #7   from 2.34 m of its record  (camera confirmed)  at 4.4 min
+   radon_deadend        closest approach 2.49 m
+   bad_air_east         closest approach 1.45 m
+   fire_loader          closest approach 1.91 m
+   roof_north           closest approach 2.52 m
+   resource records : GEMSTONE  #14
+   resource records : GOLD      #50
+   resource records : PHOSPHATE #1 17.5 % P2O5, #32 28.0 % P2O5, #55 24.5 % P2O5
+   victim search    : 9/9 areas searched (SEARCHED records)
+
+ CHECKS
+  [PASS] every resource marked with a beacon: seams and finds (5/5)
+  [PASS] victim search: every area searched and marked (9/9)
+  [PASS] victims first: every victim reached before any other target
+  [PASS] every 44-byte frame verified (HMAC) and decoded
+  [PASS] beacon tree rooted at the EXIT beacon
+  [PASS] every hazard the Writer reported was treated (5/5)
+  [PASS] no collision (0)
+  [PASS] never closer than 1.0 m to a hazard (victims excepted)
+  [PASS] followed the beacon chain (100 % of the 136 m driven between beacons stayed within 1 m of a beacon link)
+  [PASS] MISSION COMPLETE, back at the exit
+ RESULT: ALL CHECKS PASSED    (computed in 37 s)

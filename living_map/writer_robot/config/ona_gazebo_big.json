@@ -1,0 +1,47 @@
+{
+  "name": "ONA-gazebo-big",
+  "key": "demo",
+  "net_id": 42,
+  "quorum": 2,
+  "command_post": "http://10.0.2.2:3000",
+  "anchor": {
+    "lat": 36.8065,
+    "lon": 10.1815,
+    "alt": 10.0,
+    "map_yaw_deg": 0.0
+  },
+  "gateways": {
+    "gw1": {
+      "local": [
+        -6.0,
+        -2.0,
+        2.0
+      ],
+      "note": "west, outside the entrance"
+    },
+    "gw2": {
+      "local": [
+        19.0,
+        -10.0,
+        2.2
+      ],
+      "note": "south-east, past the far corner"
+    },
+    "gw3": {
+      "local": [
+        12.0,
+        10.5,
+        2.0
+      ],
+      "note": "north side"
+    }
+  },
+  "tracker": {
+    "robot_height_m": 0.3,
+    "ping_window_s": 1.0
+  },
+  "unconfirmed_hold_s": 4.0,
+  "strict": false,
+  "world": "contaminated_zone.world",
+  "comment": "Gazebo big map (building x -3..17, y -7..7 m). Gateways placed for HDOP <= 1.54 everywhere inside. The same file is read by the ONA (python -m ona --config ...) and by the robots' ona_link node."
+}

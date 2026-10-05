@@ -1,0 +1,21 @@
+
+================ sim2d report ================
+ world            : retreat_test.world  (16 boxes, 1 hazards)
+ simulated time   : 1.4 min   (computed in 1 s)
+ distance driven  : 21 m
+ map known area   : 42 m2
+ plans            : 14  (slowest planning step 24 ms)
+ retreats         : 1
+   radiation_source     first seen at 0.7 min from 2.7 m   closest after seeing it 2.16 m   closest ever 2.16 m
+ time per state   : follow 0.5 min, look 0.2 min, plan 0.1 min, retreat 0.1 min, home 0.2 min, done 0.2 min
+ final state      : DONE - EXPLORATION COMPLETE - stopped at start
+
+ CHECKS
+  [PASS] no collision (0 blocked moves)
+  [PASS] never within 0.9 m of a hazard centre after spotting it
+  [PASS] every hazard spotted (1/1)
+  [PASS] turned back after seeing each hazard (>= 1 m away within 30 s): radiation_source +4.5 m
+  [PASS] never stood still for long (longest 1.5 s)
+  [PASS] exploration completed (no reachable frontier left)
+  [PASS] back at the start and stopped
+ RESULT: ALL CHECKS PASSED

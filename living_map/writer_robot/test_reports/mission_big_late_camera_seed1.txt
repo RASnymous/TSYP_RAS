@@ -1,0 +1,26 @@
+== WRITER: exploring and dropping beacons
+   8.0 min, 148 m, state DONE; 62 beacons: 1 EXIT, 1 GAS, 2 RADIATION, 1 THERMAL, 57 WAYPOINT
+== EXECUTOR: following the beacons
+
+================ mission report ================
+ records received : 62 valid, 0 rejected (HMAC)
+ beacon tree      : root = EXIT #0, 61 links
+ executor         : 3.1 min, 83 m driven, final phase DONE
+   treated RADIATION #7   from 2.19 m of its record  (camera confirmed)  at 0.4 min
+   treated RADIATION #31  from 2.11 m of its record  (camera confirmed)  at 1.1 min
+   treated THERMAL   #25  from 2.21 m of its record  (camera confirmed)  at 1.5 min
+   treated GAS       #47  from 2.13 m of its record  (camera confirmed)  at 2.2 min
+   radiation_source     closest approach 2.19 m
+   radiation_source_2   closest approach 2.26 m
+   fire_hazard          closest approach 2.37 m
+   gas_leak             closest approach 2.28 m
+
+ CHECKS
+  [PASS] every 44-byte frame verified (HMAC) and decoded
+  [PASS] beacon tree rooted at the EXIT beacon
+  [PASS] every hazard the Writer reported was treated (4/4)
+  [PASS] no collision (0)
+  [PASS] never closer than 1.0 m to a hazard (victims excepted)
+  [PASS] followed the beacon chain (100 % of the 78 m driven between beacons stayed within 1 m of a beacon link)
+  [PASS] MISSION COMPLETE, back at the exit
+ RESULT: ALL CHECKS PASSED    (computed in 21 s)

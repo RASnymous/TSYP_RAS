@@ -1,0 +1,681 @@
+LIVING MAP - every command of the Guide (docs/1_Living_Map_Guide.pdf), in the same order and sections.
+Each command is ONE line: select the whole line under its # comment and paste it where the comment says.
+Lines in (brackets) or starting with "Ctrl-C" are actions to do, not commands to paste.
+
+
+==============================================================================
+  A. ONE-TIME SETUP
+==============================================================================
+
+--- A.1 Ubuntu VM ---
+# [VM terminal] refresh the package lists
+sudo apt update
+# [VM terminal] the ROS packages the robots use: Gazebo bridge, EKF, SLAM, URDF tools, camera conversion, keyboard driving, TF tools
+sudo apt install -y ros-lyrical-ros-gz ros-lyrical-robot-localization ros-lyrical-slam-toolbox ros-lyrical-xacro ros-lyrical-robot-state-publisher ros-lyrical-joint-state-publisher ros-lyrical-cv-bridge python3-opencv ros-lyrical-teleop-twist-keyboard ros-lyrical-tf2-tools
+# [VM terminal] C compiler (beacon simulator), unzip, curl, Node.js (dashboard), numpy (ONA, simulators), serial ports, plots
+sudo apt install -y build-essential unzip curl nodejs npm python3-numpy python3-serial python3-matplotlib
+# [VM terminal] every new terminal loads ROS 2 (adds the line only if it is missing)
+grep -q 'opt/ros/lyrical' ~/.bashrc || echo 'source /opt/ros/lyrical/setup.bash' >> ~/.bashrc
+# [VM terminal] lets you use USB serial ports and VirtualBox shared folders; takes effect after a reboot
+sudo usermod -aG dialout,vboxsf $USER
+
+
+==============================================================================
+  B. INSTALL THE PROJECT
+==============================================================================
+
+--- B.1 In the VM ---
+# [VM terminal] only if you use the shared folder of A.3
+cp /media/sf_tsyp/living_map.zip ~/Downloads/
+# [VM terminal] creates ~/living_map/ with writer_robot/, beacon_net/, ona/, command_post/, docs/. A previous ~/living_map is replaced (keep your own files elsewhere).
+cd ~ && rm -rf ~/living_map && unzip -o ~/Downloads/living_map.zip
+# [VM terminal] copies the robots package (and a copy of ona/) to ~/writer_robot_ws/src/writer_robot, puts the run scripts in ~/writer_robot_ws, and builds. It must end with Summary: 1 package finished and the "Installed" banner. A package already there is moved to ~/writer_robot_backups/ first.
+bash ~/living_map/writer_robot/install.sh
+# [VM terminal] every new terminal also loads the robots package (only if the line is missing)
+grep -q 'writer_robot_ws/install' ~/.bashrc || echo 'source ~/writer_robot_ws/install/setup.bash' >> ~/.bashrc
+# [VM terminal] builds the beacon network simulator bpsim and the frame tool bptool
+make -C ~/living_map/beacon_net/host
+# [VM terminal] only if you run the dashboard in the VM: downloads its Node packages (once, needs internet)
+cd ~/living_map/command_post && npm install
+# [VM terminal] the ONA needs numpy; pyserial only for real boards. If it fails: the second apt install line of A.1.
+python3 -c "import numpy, serial; print('numpy', numpy.__version__, 'and pyserial OK')"
+
+--- B.2 On Windows ---
+# [Windows] you get C:\tsyp\living_map\ (a short path without spaces avoids trouble)
+Unzip living_map.zip into C:\tsyp\  (right-click → Extract All → C:\tsyp)
+# [Windows] once: numpy, matplotlib and OpenCV for the 2D simulators and tests
+C:\tsyp\living_map\writer_robot\windows\install_python_deps.bat
+# [Windows] once: numpy and pyserial for the ONA
+C:\tsyp\living_map\ona\windows\install_deps.bat
+
+--- B.3 Updating later ---
+# [VM terminal] rebuild the package by hand, then open a new terminal
+cd ~/writer_robot_ws && colcon build --packages-select writer_robot --symlink-install
+
+
+==============================================================================
+  C. CHECK THAT EVERYTHING WORKS (NO GAZEBO)
+==============================================================================
+
+--- C.1 On Windows (double-click) ---
+# [Windows] the whole mission in the 2D simulator on the big map (Writer, then Executor), then opens a picture of both runs
+C:\tsyp\living_map\writer_robot\windows\sim_mission_big_map.bat
+# [Windows] the same on the small map
+C:\tsyp\living_map\writer_robot\windows\sim_mission_retreat_test.bat
+# [Windows] only the Writer exploring the big map
+C:\tsyp\living_map\writer_robot\windows\sim_big_map.bat
+# [Windows] the Writer turning back at the purple block
+C:\tsyp\living_map\writer_robot\windows\sim_retreat_test.bat
+# [Windows] every robot test: 21 Writer runs, 26 missions (the Gafsa mine included), 70 node checks, 21 beacon-graph checks, 18 robot + ONA checks (15–20 minutes)
+C:\tsyp\living_map\writer_robot\windows\run_all_tests.bat
+# [Windows] the ONA: 70, 20 and 3 checks (about 2 minutes)
+C:\tsyp\living_map\ona\windows\run_tests.bat
+# [Windows] C ⇄ Python protocol cross-checks
+C:\tsyp\living_map\beacon_net\windows\run_tests.bat
+# [Windows] one beacon-network simulation with its 13 PASS/FAIL checks
+C:\tsyp\living_map\beacon_net\windows\run_simulation.bat
+
+--- C.2 The same in the VM ---
+# [VM terminal] go to the package: the robot tools run from here
+cd ~/writer_robot_ws/src/writer_robot
+# [VM terminal] whole mission on the big map, then shows the picture
+python3 tools/sim_mission.py --png /tmp/mission.png && xdg-open /tmp/mission.png
+# [VM terminal] whole mission on the small map
+python3 tools/sim_mission.py --world worlds/retreat_test.world --png /tmp/mission_small.png
+# [VM terminal] the Writer only, big map, with checks
+python3 tools/sim2d.py --png /tmp/writer.png
+# [VM terminal] 21 Writer runs (4 maps incl. the Gafsa mine, several seeds), PASS/FAIL per run
+python3 tools/run_tests.py
+# [VM terminal] 26 whole missions, including 4 Command Post briefings and 4 in the Gafsa mine (about 6 minutes)
+python3 tools/run_mission_tests.py
+# [VM terminal] the real ROS node files on a small ROS stand-in: 70 checks
+python3 tools/test_nodes.py
+# [VM terminal] beacon-graph routes (Dijkstra / A*): 21 checks
+python3 tools/test_beacon_graph.py
+# [VM terminal] the robots and the real ONA together, no ROS needed: 18 checks (about 2 minutes)
+python3 tools/test_ona_link.py
+# [VM terminal] the ONA: 70, 20 and 3 checks (about 2 minutes)
+cd ~/living_map/ona && python3 tests/test_ona.py && python3 tests/test_zone.py && python3 tests/test_vs_beaconnet.py
+# [VM terminal] protocol cross-checks + firmware compiled for the PC + one network simulation
+make -C ~/living_map/beacon_net/host test
+
+--- C.3 Options of the 2D simulators ---
+# [VM terminal] replay a mission recorded in Gazebo in the 2D Executor, in seconds
+python3 tools/sim_mission.py --mission ~/writer_robot_ws/missions/latest.json --png /tmp/replay.png
+# [VM terminal] a briefing: the Executor treats #25, #11, #20 in that order, then RESULT: ALL CHECKS PASSED
+python3 tools/sim_mission.py --mission missions/demo_big.json --wait-briefing 30 --briefing 5:25,11,20
+# [VM terminal] re-targeted during the mission; it stays at its last target
+python3 tools/sim_mission.py --mission missions/demo_big.json --briefing 40:20,30:stay
+# [VM terminal] called back: it stops and follows the beacons out
+python3 tools/sim_mission.py --mission missions/demo_big.json --briefing 45:abort
+
+
+==============================================================================
+  D. THE COMMAND POST DASHBOARD
+==============================================================================
+
+--- D.1 Start it ---
+# [Windows] recommended: the dashboard on Windows (installs its packages the first time). Keep the window open.
+C:\tsyp\living_map\beacon_net\windows\run_dashboard.bat
+# [Browser] open the dashboard in the Windows browser
+http://localhost:3000
+# [Windows] dashboard + a scripted mission with no robot and no simulator: votes, both robots on their circles, a lying gateway, a SLAM drift, the satellite link
+C:\tsyp\living_map\beacon_net\windows\run_dashboard_demo.bat
+# [VM terminal] alternative: the dashboard inside the VM
+cd ~/living_map/command_post && npm start
+# [VM terminal] open it in the VM
+firefox http://localhost:3000 &
+# [VM terminal] VM: dashboard + scripted mission
+cd ~/living_map/command_post && npm run demo
+# [VM or Windows] (in command_post/) only the scripted feeder, against a dashboard already running
+npm run mock
+# [VM or Windows] VM syntax: the scripted mission with one gateway and no ONA
+ONA=0 npm run demo
+# [VM or Windows] VM syntax: scripted feeder against another machine (Windows: set TARGET=… first)
+TARGET=http://192.168.1.20:3000 node mock_feeder.js
+# [VM or Windows] VM syntax: another port and the list of expected gateways
+PORT=4000 GATEWAYS=gw1,gw2,gw3 npm start
+
+--- D.4 Check the server from a terminal ---
+# [VM terminal] from the VM to a dashboard on Windows: {"ok":true,…} proves the network path works (use localhost if the dashboard runs in the VM)
+curl -s http://10.0.2.2:3000/api/health
+# [VM terminal] the start of the stored state
+curl -s http://10.0.2.2:3000/api/state | head -c 600
+# [VM terminal] post one test beacon: a gas pin appears at once
+curl -s -X POST http://10.0.2.2:3000/api/beacon -H "Content-Type: application/json" -d '{"beacon_id":99,"event_type":"gas","value":50,"lat":36.8066,"lon":10.1816,"ttl":20,"gateway_id":"test"}'
+# [Windows] Windows: the last 200 beacons as JSON
+curl.exe -s http://localhost:3000/api/beacons
+# [Browser] the last mission dispatched from the planner
+http://localhost:3000/api/mission-dispatch/latest
+
+
+==============================================================================
+  E. THE WRITER ROBOT
+==============================================================================
+
+--- E.1 Start it ---
+# [VM terminal] big map (default): Gazebo + robot + SLAM + vision + beacons + mission recorder + explorer + RViz
+~/writer_robot_ws/run_explorer.sh
+# [VM terminal] the same without the Gazebo window (much faster; watch RViz)
+~/writer_robot_ws/run_explorer.sh headless
+# [VM terminal] the small map: a purple block after a corner, the robot must turn back (quick, good for a first test)
+~/writer_robot_ws/run_explorer.sh retreat
+# [VM terminal] the original small arena
+~/writer_robot_ws/run_explorer.sh small
+# [VM terminal] with the Outside Network Area: every beacon reaches the dashboard through three gateways as it is dropped, and the Writer appears on its distance circles (start the dashboard first, part D)
+~/writer_robot_ws/run_explorer.sh headless ona
+# [VM terminal] options combine in any order
+~/writer_robot_ws/run_explorer.sh retreat headless ona
+# [VM terminal] the Gafsa mine (part N)
+~/writer_robot_ws/run_explorer.sh mine headless ona
+# [VM terminal] try the graphics card (VirtualBox 3D acceleration ON, see J.1); if Gazebo does not start, drop gpu
+~/writer_robot_ws/run_explorer.sh headless gpu
+# [VM terminal] slower robot (0.5 m/s, slower turns), in case it bumps into things on your computer
+~/writer_robot_ws/run_explorer.sh headless slow
+# [VM terminal] experiment only: odometry from the wheels + IMU (EKF) instead of Gazebo's true motion (the default)
+~/writer_robot_ws/run_explorer.sh ekf
+
+--- E.2 Watch what it does (new terminals) ---
+# [VM terminal] the robot's decisions: targets, RETREAT, LOOK, recoveries, EXPLORATION COMPLETE, DONE
+tail -f /tmp/explorer.log
+# [VM terminal] where the time goes, one line per simulated minute: driving, camera looks, planning, recovering
+grep -E 'time so far|total time|recover' /tmp/explorer.log
+# [VM terminal] health check: rate of every topic, the odometry and SLAM transforms, Gazebo speed, last log lines. Send its output if something does not work.
+bash ~/writer_robot_ws/check_sim.sh
+# [VM terminal] the state and what it is doing (Ctrl-C to stop)
+ros2 topic echo /writer/explorer_status
+# [VM terminal] camera health every 10 s: colour frames, depth frames, hazard frames per colour (M.2)
+grep health /tmp/vision.log
+# [VM terminal] every VISION EVENT (a hazard that gets a beacon)
+tail -f /tmp/vision.log
+# [VM terminal] every beacon dropped, with its link
+tail -f /tmp/beacon.log
+# [VM terminal] every record written to the mission file (kind + frame)
+tail -f /tmp/mission.log
+# [VM terminal] the beacons as JSON (id, type, x, y, link_id, hazard x/y)
+ros2 topic echo /writer/beacon_dropped
+# [VM terminal] every camera sighting (type, map x/y, range)
+ros2 topic echo /writer/hazard
+# [VM terminal] the beacons in lat/lon
+ros2 topic echo /outside_network/beacon_gps
+# [VM terminal] option ona: the ONA (uplink, queue, each gateway, records confirmed, the robot located), a line every 5 s
+tail -f /tmp/ona.log
+
+--- E.3 Stop it and keep the mission ---
+# [VM terminal] stops everything the script started, once the log says DONE
+Ctrl-C  (in the run_explorer.sh terminal)
+# [VM terminal] from any terminal: kills every simulation process (if a window hangs, or before starting again)
+bash ~/writer_robot_ws/stop_demo.sh
+# [VM terminal] latest.json (always the last run) and mission_<date>.json copies
+ls -l ~/writer_robot_ws/missions/
+# [VM terminal] read the mission file (q to quit)
+python3 -m json.tool ~/writer_robot_ws/missions/latest.json | less
+# [VM terminal] how many beacons were recorded
+grep -c '"frame"' ~/writer_robot_ws/missions/latest.json
+# [VM terminal] keep a good run under its own name (the next Writer run overwrites latest.json)
+cp ~/writer_robot_ws/missions/latest.json ~/writer_robot_ws/missions/good_run.json
+
+--- E.4 Change a parameter ---
+# [VM terminal] restart the explorer slower, logging every planning decision. It re-plans from where the robot is.
+pkill -f frontier_explorer; ros2 run writer_robot frontier_explorer --ros-args -p use_sim_time:=true -p v_max:=0.3 -p verbose:=true > /tmp/explorer.log 2>&1 &
+# [VM terminal] restart the camera node with a smaller blob threshold (sees blocks from farther away)
+pkill -f vision_event_detector; ros2 run writer_robot vision_event_detector --ros-args -p use_sim_time:=true -p min_area_px:=400 > /tmp/vision.log 2>&1 &
+# [VM terminal] all parameters of a running node
+ros2 param list /frontier_explorer
+# [VM terminal] the value a node is using
+ros2 param get /frontier_explorer keepout_radius
+
+--- E.5 Start the Writer by hand, one terminal per piece (advanced) ---
+# [VM terminal] T0: clean start
+bash ~/writer_robot_ws/stop_demo.sh
+# [VM terminal] T1: Gazebo, robot, bridges (incl. the odometry TF). Add headless:=true for no window, world:=<file> for another map.
+ros2 launch writer_robot gazebo_sim.launch.py
+# [VM terminal] check: about 8 Hz. Ctrl-C, then continue.
+ros2 topic hz /scan
+# [VM terminal] T2: SLAM (inactive until the next two lines)
+ros2 run slam_toolbox async_slam_toolbox_node --ros-args --params-file $(ros2 pkg prefix writer_robot)/share/writer_robot/config/slam_toolbox_params.yaml -p use_sim_time:=true
+# [VM terminal] T3: then…
+ros2 lifecycle set /slam_toolbox configure
+# [VM terminal] …SLAM starts publishing /map and map→odom
+ros2 lifecycle set /slam_toolbox activate
+# [VM terminal] T3: camera
+ros2 run writer_robot vision_event_detector --ros-args -p use_sim_time:=true
+# [VM terminal] T4: beacons
+ros2 run writer_robot beacon_drop_node --ros-args -p use_sim_time:=true
+# [VM terminal] T5: mission file
+ros2 run writer_robot mission_recorder --ros-args -p use_sim_time:=true
+# [VM terminal] T6: the brain (the robot starts moving)
+ros2 run writer_robot frontier_explorer --ros-args -p use_sim_time:=true
+# [VM terminal] T7: RViz
+rviz2 -d $(ros2 pkg prefix writer_robot)/share/writer_robot/config/writer.rviz --ros-args -p use_sim_time:=true
+
+--- E.6 Drive by hand and test the trapdoor (optional) ---
+# [VM terminal] drive with the keyboard (i, j, l, comma, k). Do not run it together with the explorer.
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# [VM terminal] open the beacon trapdoor
+ros2 topic pub -1 /trapdoor_cmd std_msgs/msg/Float64 "{data: -1.2}"
+# [VM terminal] close it
+ros2 topic pub -1 /trapdoor_cmd std_msgs/msg/Float64 "{data: 0.0}"
+
+
+==============================================================================
+  F. THE EXECUTOR ROBOT
+==============================================================================
+
+--- F.1 Start it ---
+# [VM terminal] uses ~/writer_robot_ws/missions/latest.json (your last Writer run). The world is rebuilt with a beacon model at every drop point.
+~/writer_robot_ws/run_executor.sh
+# [VM terminal] ready-made mission on the big map (43 beacons, 4 hazards): no Writer run needed
+~/writer_robot_ws/run_executor.sh demo
+# [VM terminal] ready-made mission on the small map (about 1 minute)
+~/writer_robot_ws/run_executor.sh demo retreat
+# [VM terminal] any saved mission file
+~/writer_robot_ws/run_executor.sh ~/writer_robot_ws/missions/good_run.json
+# [VM terminal] no Gazebo window (faster); add headless to any of the above
+~/writer_robot_ws/run_executor.sh demo headless
+# [VM terminal] with the Outside Network Area: it waits at the exit for a briefing from the dashboard (F.3)
+~/writer_robot_ws/run_executor.sh demo headless ona
+# [VM terminal] the ready-made Gafsa mine mission (part N)
+~/writer_robot_ws/run_executor.sh mine headless ona
+# [VM terminal] slower robot (0.5 m/s)
+~/writer_robot_ws/run_executor.sh demo headless slow
+# [VM terminal] experiment only: wheel + IMU odometry (EKF)
+~/writer_robot_ws/run_executor.sh demo ekf
+
+--- F.2 Watch it (new terminals) ---
+# [VM terminal] the mission: records received, briefing, targets, GOTO, approaching, TREATED, RETURN, MISSION COMPLETE, and a "time so far" line every simulated minute
+tail -f /tmp/executor.log
+# [VM terminal] the LoRa receiver: how many frames were verified and decoded
+cat /tmp/exec_radio.log
+# [VM terminal] why a hazard was not treated at the first try (and what the robot did about it)
+grep -E "skipped|approach failed|unreachable|attempt|treating from here" /tmp/executor.log
+# [VM terminal] phase and progress
+ros2 topic echo /executor/status
+# [VM terminal] one JSON message per treated hazard
+ros2 topic echo /executor/mission_events
+# [VM terminal] one decoded beacon record as the robot receives it
+ros2 topic echo /executor/lora_rx --once
+# [VM terminal] the Executor's camera health
+grep health /tmp/exec_vision.log
+
+--- F.3 Brief it from the Command Post (option ona) ---
+# [VM terminal] the mission the Writer recorded (run_executor.sh demo headless ona for the ready-made one)
+~/writer_robot_ws/run_executor.sh headless ona
+# [Browser] the ONA signs it, the gateways transmit it, the robot checks it: "✓ acknowledged" in the ONA panel within a few seconds; it treats them in your order. Untick "back to the exit afterwards" to keep it there.
+(dashboard) Select on map → click 2–3 hazards → Dispatch mission
+# [VM terminal] what the Executor did with the briefing
+grep -iE "briefing|TREATED|COMPLETE" /tmp/executor.log
+# [VM terminal] the briefing as the robot received it (latched)
+ros2 topic echo /executor/briefing
+# [VM terminal] phase, mission id, acknowledgement, done / total: what goes into its position reports
+ros2 topic echo /executor/telemetry
+# [VM terminal] the robot's radio: pings sent, records, briefings, simulation speed
+ros2 topic echo /ona_link/status
+# [Browser] a signed ABORT: it stops and follows the beacons out
+(dashboard) Call the Executor back
+# [VM terminal] more time to dispatch (simulated seconds; Gazebo in a VM is slower than real time). A briefing that arrives later still re-targets it.
+WAIT_BRIEFING=180 ~/writer_robot_ws/run_executor.sh demo headless ona
+
+--- F.4 Change what it does ---
+# [VM terminal] restart only the Executor brain: treat only radiation and gas, 10 s each (it rebuilds the tree from the radio in a few seconds)
+pkill -f executor_node; ros2 run writer_robot executor_node --ros-args -p use_sim_time:=true -p target_kinds:=RADIATION,GAS -p treat_time:=10.0 > /tmp/executor.log 2>&1 &
+# [VM terminal] only beacons 13 and 30
+pkill -f executor_node; ros2 run writer_robot executor_node --ros-args -p use_sim_time:=true -p target_ids:='"13,30"' > /tmp/executor.log 2>&1 &
+
+--- F.5 Beacon-graph navigation (Dijkstra / A*): ready for later ---
+# [VM or Windows] routes from the EXIT to every hazard: tree, Dijkstra and A*, plus a picture
+python3 tools/beacon_graph_demo.py --png /tmp/graph.png
+# [VM or Windows] the same on the mission your Writer just recorded in Gazebo
+python3 tools/beacon_graph_demo.py --mission ~/writer_robot_ws/missions/latest.json --png /tmp/mine.png
+# [VM or Windows] tree only (no shortcuts), for comparison
+python3 tools/beacon_graph_demo.py --link-radius 0
+# [Windows] Windows: the demo with its picture
+C:\tsyp\living_map\writer_robot\windows\beacon_graph_demo.bat
+
+--- F.6 Start the Executor by hand (advanced) ---
+# [VM terminal] T1: build the world with the beacons in place
+ros2 run writer_robot mission_world --mission ~/writer_robot_ws/missions/latest.json --out /tmp/executor_world.world
+# [VM terminal] T1: Gazebo with the blue Executor
+ros2 launch writer_robot gazebo_sim.launch.py world:=/tmp/executor_world.world robot:=executor
+# [VM terminal] T2: SLAM; then ros2 lifecycle set /slam_toolbox configure and … activate in T3
+ros2 run slam_toolbox async_slam_toolbox_node --ros-args --params-file $(ros2 pkg prefix writer_robot)/share/writer_robot/config/slam_toolbox_params.yaml -p use_sim_time:=true
+# [VM terminal] T3: the LoRa receiver
+ros2 run writer_robot beacon_radio_sim --ros-args -p use_sim_time:=true -p mission_file:=$HOME/writer_robot_ws/missions/latest.json
+# [VM terminal] T4: the Executor's camera (topics renamed)
+ros2 run writer_robot vision_event_detector --ros-args -p use_sim_time:=true -r /writer/hazard:=/executor/hazard -r /writer/events:=/executor/vision_events -r /writer/vision_target:=/executor/vision_target
+# [VM terminal] T5: the brain
+ros2 run writer_robot executor_node --ros-args -p use_sim_time:=true
+# [VM terminal] T6: RViz
+rviz2 -d $(ros2 pkg prefix writer_robot)/share/writer_robot/config/executor.rviz --ros-args -p use_sim_time:=true
+# [VM terminal] T7 (optional): the ONA
+cd ~/writer_robot_ws/src/writer_robot/ona && python3 -m ona --config ona_config_gazebo_big.json --udp 127.0.0.1:47100 --command-post http://10.0.2.2:3000
+# [VM terminal] T8 (optional): the robot's radio to the three gateways; then start T5 with -p wait_briefing:=60.0
+ros2 run writer_robot ona_link --ros-args -p use_sim_time:=true -p robot:=executor -p world_file:=/tmp/executor_world.world -p mission_file:=$HOME/writer_robot_ws/missions/latest.json
+
+
+==============================================================================
+  G. THE OUTSIDE NETWORK AREA (THREE GATEWAYS)
+==============================================================================
+
+--- G.1 The zone simulator: a whole mission, three gateways ---
+# [Windows] window 1: the ONA, listening on UDP 47100, posting to http://localhost:3000
+C:\tsyp\living_map\ona\windows\run_ona.bat
+# [Windows] window 2: the mission. On the dashboard: select 2–3 hazards and Dispatch mission within a minute; the Executor acknowledges and treats them in that order.
+C:\tsyp\living_map\ona\windows\simulate_zone.bat
+# [Windows] instead of window 2: gw3 lies (IGNORED), gw2 forges a victim at 60 s (stays 1/3), beacon 6 is crushed at 90 s (LOST?), the robot's SLAM slips 2.9 m at 150 s (SLAM DRIFT)
+C:\tsyp\living_map\ona\windows\simulate_faults.bat
+# [Windows] instead of window 1 (in cmd): LTE down from 60 s to 150 s: SATELLITE on the dashboard, only the essentials go out
+C:\tsyp\living_map\ona\windows\run_ona.bat --lte-outage 60-150
+# [VM terminal] the same ONA in the VM (dashboard on Windows)
+cd ~/living_map/ona && ./run_ona.sh --command-post http://10.0.2.2:3000
+# [VM terminal] second VM terminal: the nominal zone
+cd ~/living_map/ona && ./simulate_zone.sh
+# [VM terminal] or the zone with every fault
+cd ~/living_map/ona && ./simulate_zone.sh --liar gw3 --forge gw2@60 --kill 6@90 --slam-slip 150:2.5,-1.5
+
+--- G.2 The beacon network simulator through the vote ---
+# [Windows] the beacons' own C code, 14 beacons, three gateways, 10× real time, through the ONA to the dashboard (about 6 minutes): every record ✓3/3, beacon 6 LOST at minute 25, the attacker's frames rejected
+C:\tsyp\living_map\ona\windows\bpsim_to_ona.bat
+# [VM terminal] the same in the VM
+cd ~/living_map/ona && ../beacon_net/host/bpsim --gateways 3 --speed 20 --quiet | python3 -m ona --stdin --config ona_config_bpsim.json --command-post http://10.0.2.2:3000
+
+--- G.3 With the Gazebo robots ---
+# [VM terminal] a dashboard on another computer
+COMMAND_POST=http://192.168.1.20:3000 ~/writer_robot_ws/run_executor.sh demo headless ona
+# [Windows] the ONA on Windows instead of the VM (big map; add --config ona_config_gazebo_retreat.json for the small one). Allow Python on private networks when asked.
+C:\tsyp\living_map\ona\windows\run_ona_for_gazebo.bat
+# [VM terminal] then the robot sends its radio lines to the Windows ONA (works the same with run_explorer.sh)
+ONA_HOST=10.0.2.2 ~/writer_robot_ws/run_executor.sh demo headless ona
+# [VM terminal] stops everything, the ONA and ona_link included
+bash ~/writer_robot_ws/stop_demo.sh
+
+--- G.4 Look inside ---
+# [VM terminal] the ONA started by the ona option: link, queue, each gateway, records confirmed, robots
+tail -f /tmp/ona.log
+# [VM terminal] the robot's radio node: gateways, walls, briefings received
+cat /tmp/ona_link.log
+# [VM terminal] the last 15 decisions of the ONA (rejected frames, votes, alerts, link changes, briefings)
+python3 -c "import sqlite3; [print(r) for r in sqlite3.connect('/tmp/ona_queue.sqlite3').execute('select ts, event, detail_json from audit order by id desc limit 15')]"
+# [VM or Windows] (in ona/) every option
+python3 -m ona --help
+
+
+==============================================================================
+  H. THE BEACON NETWORK (LMB2)
+==============================================================================
+
+--- H.1 Run the network simulator ---
+# [VM terminal] the simulator folder
+cd ~/living_map/beacon_net/host
+# [VM terminal] 60 simulated minutes, 14 beacons, in a few seconds. The timeline and the PASS/FAIL checks print on the screen; > /dev/null hides the JSON lines meant for a gateway bridge.
+./bpsim > /dev/null
+# [VM terminal] a bigger, harsher network
+./bpsim --beacons 30 --minutes 90 --rubble 2.5 > /dev/null
+# [VM terminal] destroy beacon 3 at minute 20, switch the gateway on at minute 40 (it must pull everything)
+./bpsim --kill 3@20 --gw-late 40 > /dev/null
+# [VM terminal] long range, slow radio (SF12)
+./bpsim --sf 12 --minutes 120 > /dev/null
+# [VM terminal] what the gateway prints: JSON lines
+./bpsim --speed 20 | head -5
+# [VM terminal] three gateways: one JSON line per gateway ("gw":"gw1", …), what the ONA reads (G.2)
+./bpsim --gateways 3 --speed 20 | head -5
+# [Windows] Windows: the prebuilt .exe folder (in cmd)
+cd /d C:\tsyp\living_map\beacon_net\windows
+# [Windows] the same simulator on Windows (run_simulation.bat = no options)
+bpsim.exe --beacons 30 --rubble 2.5 > nul
+
+--- H.2 Tests and stress matrix ---
+# [VM terminal] build bpsim and bptool
+make -C ~/living_map/beacon_net/host
+# [VM terminal] firmware compiled for the PC + C/Python/firmware cross-checks + one simulation
+make -C ~/living_map/beacon_net/host test
+# [VM terminal] the 42-scenario stress matrix (about 20 s): must end with 42/42 PASS
+make -C ~/living_map/beacon_net/host matrix
+# [VM terminal] rebuild the Windows .exe files (needs the MinGW cross-compiler: sudo apt install -y mingw-w64)
+make -C ~/living_map/beacon_net/host windows
+# [VM terminal] delete the built files
+make -C ~/living_map/beacon_net/host clean
+# [VM or Windows] only the Python ⇄ C checks (Windows: run_tests.bat)
+python3 ~/living_map/beacon_net/python/tests/test_crosscheck.py
+
+--- H.3 Work with single frames (bptool) ---
+# [VM terminal] the reference VICTIM record from the brief, as JSON and as the 44-byte frame
+./bptool example
+# [VM terminal] any record as JSON → signed frame (the last number is the time stamp; leave it out for "now")
+./bptool fromjson 4c6976696e674d61702d44454d4f2121 42 '{"beacon_id":7,"kind":"VICTIM","gps":{"lat":34.4312,"lon":8.7845,"err_m":2.1},"severity":15,"next":{"id":6,"dist_m":8.5},"ttl_s":7200}' 1758500000
+# [VM terminal] verify and decode a frame, e.g. one copied from a mission file (wrong key or one changed byte → rejected)
+./bptool decode 4c6976696e674d61702d44454d4f2121 42 212a05000f00050001000003e038f015579411060600ffbc02002300d83bb16ac021e01037f852f084ff7484
+# [VM terminal] time on air of a 44-byte frame at SF9, 125 kHz, CR 4/5: 288 ms
+./bptool airtime 44 9 125000 5
+# [VM terminal] a signed pull digest from node 900 listing records 5 (seq 1) and 7 (seq 2)
+./bptool digest 4c6976696e674d61702d44454d4f2121 42 900 0 5:1 7:2
+# [VM terminal] raw HMAC-SHA256 of a hex message (test vectors)
+./bptool hmac 4c6976696e674d61702d44454d4f2121 00ff
+
+
+==============================================================================
+  I. ONE GATEWAY, NO ONA: OTHER WAYS INTO THE DASHBOARD
+==============================================================================
+
+--- I.1 Simulated network to dashboard ---
+# [Windows] simplest: bpsim at 20× real time straight into the Windows dashboard; beacons appear over a few minutes
+C:\tsyp\living_map\beacon_net\windows\simulate_to_dashboard.bat
+# [Windows] from cmd in beacon_net\windows, with any bpsim options
+py -3 ..\python\beaconnet\gateway_bridge.py --sim="--speed 20 --beacons 30 --rubble 2.5" --server http://localhost:3000
+# [VM terminal] the simulator in the VM, dashboard on Windows
+cd ~/living_map/beacon_net/host && ./bpsim --speed 20 | python3 ../python/beaconnet/gateway_bridge.py --stdin --server http://10.0.2.2:3000
+# [VM terminal] no dashboard: print what would be posted
+cd ~/living_map/beacon_net/host && ./bpsim --speed 20 | python3 ../python/beaconnet/gateway_bridge.py --stdin --dry-run
+
+--- I.2 The Writer (Gazebo) to dashboard, LMB2 records ---
+# [VM terminal] dashboard on Windows
+python3 ~/living_map/beacon_net/ros/beacon_record_node.py --ros-args -p dashboard:=http://10.0.2.2:3000
+# [VM terminal] dashboard in the VM
+python3 ~/living_map/beacon_net/ros/beacon_record_node.py --ros-args -p dashboard:=http://localhost:3000
+# [VM terminal] the records it builds (JSON + frame hex)
+ros2 topic echo /writer/beacon_record
+
+--- I.3 The Writer to dashboard, original contract (ros_bridge.py) ---
+# [VM terminal] older bridge: posts each /writer/beacon_dropped in the original brief format (no LMB2 fields) with a gw1 heartbeat. Parameters: anchor_lat, anchor_lon, map_yaw_deg, gateway_id, send_trail (false = hazards only). Use I.2 or I.3, not both.
+python3 ~/living_map/command_post/ros_bridge.py --ros-args -p server:=http://10.0.2.2:3000
+
+--- I.4 A real gateway board to dashboard ---
+# [Windows] asks for the COM port (Device Manager → Ports, e.g. COM5) and the mission key (Enter = demo), sends KEY and TIME to the board, then posts everything it hears
+C:\tsyp\living_map\beacon_net\windows\real_gateway_to_dashboard.bat
+# [Windows] the same by hand (from beacon_net\windows)
+py -3 ..\python\beaconnet\gateway_bridge.py --serial COM5 --key demo --server http://localhost:3000
+# [VM terminal] in the VM (needs Devices → USB passthrough of the board and the dialout group)
+python3 ~/living_map/beacon_net/python/beaconnet/gateway_bridge.py --serial /dev/ttyUSB0 --key demo --server http://10.0.2.2:3000
+# [VM terminal] which USB serial ports the VM sees
+ls /dev/ttyUSB* /dev/ttyACM*
+
+
+==============================================================================
+  J. THE FULL DEMO, IN ORDER
+==============================================================================
+
+--- J.1 Make it fast enough for a demo ---
+# [VM terminal] how fast the simulation runs (1.0 = real time)
+gz topic -e -t /world/contaminated_zone/stats -n 1 | grep real_time_factor
+# [VM terminal] with a headless run: open the Gazebo window for a moment to show the 3D world; close it again to get the speed back
+LIBGL_ALWAYS_SOFTWARE=1 gz sim -g
+
+--- J.2 The order of the presentation ---
+# [Windows] 1. Start the Command Post. Keep the window open.
+C:\tsyp\living_map\beacon_net\windows\run_dashboard.bat
+# [Browser] 2. Open the dashboard.
+http://localhost:3000
+# [Windows] 3. Warm-up (optional, about 3 minutes), window A: the ONA with an LTE outage.
+C:\tsyp\living_map\ona\windows\run_ona.bat --lte-outage 60-120
+# [Windows] 4. Window B: show the vote, the lying gateway, the forged victim, the crushed beacon, the SLAM drift and the satellite link. Then close windows A and B and restart the dashboard (step 1) to clear it.
+C:\tsyp\living_map\ona\windows\simulate_faults.bat
+# [VM terminal] 5. VM terminal 1: make sure nothing old is running.
+bash ~/writer_robot_ws/stop_demo.sh
+# [VM terminal] 6. Terminal 1: the Writer (add retreat for the short version). Pins appear ✓3/3 as it drops beacons; the Writer moves on its three circles.
+~/writer_robot_ws/run_explorer.sh headless ona
+# [VM terminal] 7. Terminal 2: narrate: hazards, RETREAT, LOOK, EXPLORATION COMPLETE, DONE.
+tail -f /tmp/explorer.log
+# [Browser] 8. Show its route to the exit, its confidence and half-life, its vote.
+(dashboard) click a hazard pin
+# [VM terminal] 9. The mission file is saved (~/writer_robot_ws/missions/latest.json).
+Ctrl-C in terminal 1 after DONE
+# [VM terminal] 10. Terminal 1: the Executor waits at the exit (run_executor.sh demo headless ona if the Writer run was cut short).
+~/writer_robot_ws/run_executor.sh headless ona
+# [Browser] 11. "✓ acknowledged"; it treats them in your order; Follow shows the circles crossing on it.
+(dashboard) Select on map → pick the targets → Dispatch mission
+# [VM terminal] 12. Terminal 2: briefing, GOTO, approaching, TREATED, RETURN, MISSION COMPLETE.
+tail -f /tmp/executor.log
+# [Browser] 13. Optional: it turns back to the exit.
+(dashboard) Call the Executor back
+# [VM terminal] 14. End.
+bash ~/writer_robot_ws/stop_demo.sh
+
+
+==============================================================================
+  K. REAL HARDWARE: BEACONS AND GATEWAYS
+==============================================================================
+
+--- K.3 Talk to a board (Serial Monitor, 115200 baud) ---
+# [Serial Monitor, 115200 baud] mission key (demo key; KEY <32 hex> for a real mission). Stored in flash.
+KEY demo
+# [Serial Monitor, 115200 baud] set the clock in unix seconds (beacons have no real-time clock; use the current time)
+TIME 1790000000
+# [Serial Monitor, 115200 baud] network id (default 42)
+NET 42
+# [Serial Monitor, 115200 baud] node id (a beacon also takes it from PROV)
+ID 7
+# [Serial Monitor, 115200 baud] gateway label shown on the dashboard
+NAME gw1
+# [Serial Monitor, 115200 baud] install this beacon's record: it starts announcing it within 0.8 s
+PROV {"beacon_id":7,"kind":"VICTIM","gps":{"lat":36.8066,"lon":10.1816,"err_m":2.1},"severity":15,"next":{"id":6,"dist_m":8.5}}
+# [Serial Monitor, 115200 baud] give it a record it should already know
+SEED {"beacon_id":6,"kind":"WAYPOINT","gps":{"lat":36.8065,"lon":10.1815}}
+# [Serial Monitor, 115200 baud] withdraw this beacon's event (RETRACTED flag, new seq)
+RETRACT
+# [Serial Monitor, 115200 baud] one JSON line: id, role, key set, clock set, records known, duty used, frames sent and received (incl. bad MACs)
+STATUS
+# [Serial Monitor, 115200 baud] every record in the cache
+DUMP
+# [Serial Monitor, 115200 baud] print every frame received and sent (VERBOSE 0 to stop)
+VERBOSE 1
+# [Serial Monitor, 115200 baud] gateway: raw frame lines for the ONA on (default; RAW 0 off)
+RAW 1
+# [Serial Monitor, 115200 baud] gateway: transmit one 44-byte frame (the ONA does it for briefings): OK TX type 0x24
+TX <88 hex characters>
+# [Serial Monitor, 115200 baud] restart (record and seq survive in flash)
+REBOOT
+# [Serial Monitor, 115200 baud] erase key, id and record
+FACTORY
+# [Serial Monitor, 115200 baud] list the commands
+HELP
+
+--- K.4 Provision beacons from the Writer ---
+# [VM terminal] each time the Writer drops a beacon, the board on /dev/ttyUSB1 receives TIME, PROV with its record and SEED with the route so far
+python3 ~/living_map/beacon_net/ros/beacon_record_node.py --ros-args -p serial:=/dev/ttyUSB1 -p key:=demo
+
+--- K.5 Three real gateways into the ONA ---
+# [Windows] in cmd: the ONA folder
+cd /d C:\tsyp\living_map\ona
+# [Windows] the ONA sends each board KEY, NET, NAME, TIME itself, then votes on everything they hear
+py -3 -m ona --serial gw1=COM3 --serial gw2=COM4 --serial gw3=COM5 --config my_site.json --command-post http://localhost:3000
+# [VM terminal] the same in the VM (USB passthrough of the three boards)
+cd ~/living_map/ona && python3 -m ona --serial gw1=/dev/ttyUSB0 --serial gw2=/dev/ttyUSB1 --serial gw3=/dev/ttyUSB2 --config my_site.json --command-post http://10.0.2.2:3000
+
+
+==============================================================================
+  L. COMMAND REFERENCE
+==============================================================================
+
+--- L.2 ROS 2 and Gazebo tools ---
+# [VM terminal] every topic that exists right now
+ros2 topic list
+# [VM terminal] rate of a topic (LiDAR ≈ 8 Hz, camera ≈ 6 Hz, map every 2 s)
+ros2 topic hz /scan
+# [VM terminal] what the robot brain commands
+ros2 topic echo /cmd_vel
+# [VM terminal] who publishes and who listens
+ros2 topic info /camera/image_raw
+# [VM terminal] every running node
+ros2 node list
+# [VM terminal] SLAM state: must be active
+ros2 lifecycle get /slam_toolbox
+# [VM terminal] where the robot is on the map
+ros2 run tf2_ros tf2_echo map base_footprint
+# [VM terminal] draws the TF tree into frames_*.pdf in the current folder
+ros2 run tf2_tools view_frames
+# [VM terminal] where the installed package is
+ros2 pkg prefix writer_robot
+# [VM terminal] Gazebo's own topics (camera, LiDAR, pose)
+gz topic -l
+# [VM terminal] which simulation processes are running
+ps aux | grep -E "gz sim|slam|explorer|executor|ona" | grep -v grep
+
+
+==============================================================================
+  M. TROUBLESHOOTING
+==============================================================================
+
+--- M.1 The robot does not drive, or the map in RViz turns or smears ---
+# [VM terminal] must print 1 (the installed robot publishes Gazebo's odometry); otherwise re-run install.sh
+grep -c OdometryPublisher $(ros2 pkg prefix writer_robot)/share/writer_robot/urdf/writer_robot.urdf.xacro
+# [VM terminal] while the robot runs: odom→base_footprint present and changing, /odom about 30 Hz, /scan about 8 Hz, /map every 2 s
+bash ~/writer_robot_ws/check_sim.sh
+# [VM terminal] then start again: a fresh SLAM map
+bash ~/writer_robot_ws/stop_demo.sh
+# [VM terminal] SLAM warnings (dropped messages, TF timeouts)
+tail -n 30 /tmp/slam.log
+# [VM terminal] where the robot got stuck and why, and where the time goes
+grep -E "recover|blacklisted|WARNING|map check|time so far" /tmp/explorer.log
+
+--- M.2 A hazard block is not detected ---
+# [VM terminal] the last camera health lines
+grep health /tmp/vision.log | tail -5
+
+
+==============================================================================
+  N. THE GAFSA MINE (TUNNELS)
+==============================================================================
+
+--- N.1 Without ROS ---
+# [Windows] the dashboard + the mine mission replayed: the plan, beacons appearing, areas turning green; then the Executor waits at the portal: Select on map → Dispatch mission within a minute (e.g. the rich phosphate layer and the miner), else it goes for the miner first and every danger
+C:\tsyp\living_map\beacon_net\windows\run_dashboard_mine_demo.bat
+# [Browser] the dashboard (Gafsa mine panel on the right, Resources and Search buttons on the map)
+http://localhost:3000
+# [Windows] the whole mine mission in the 2D simulator, with its checks and a picture
+C:\tsyp\living_map\writer_robot\windows\sim_mission_mine.bat
+# [Windows] only the Writer in the mine
+C:\tsyp\living_map\writer_robot\windows\sim_mine.bat
+# [Windows] the real ONA for the mine (window 1, dashboard started first)
+C:\tsyp\living_map\ona\windows\run_ona_mine.bat
+# [Windows] window 2: the recorded mine mission as the three gateways hear it
+C:\tsyp\living_map\ona\windows\simulate_mine.bat
+# [VM terminal] the dashboard mine demo in the VM
+cd ~/living_map/command_post && npm run demo:mine
+# [VM terminal] the whole mine mission in 2D: victims first, every area searched, every resource marked
+cd ~/writer_robot_ws/src/writer_robot && python3 tools/sim_mission.py --world worlds/gafsa_mine.world --png /tmp/mine.png
+# [VM terminal] a briefing: sample the rich phosphate layer #51, then the miner #53
+cd ~/writer_robot_ws/src/writer_robot && python3 tools/sim_mission.py --world worlds/gafsa_mine.world --mission missions/demo_mine.json --wait-briefing 30 --briefing 5:51,53
+# [VM terminal] the mine ONA in the VM (terminal 1)
+cd ~/living_map/ona && python3 -m ona --config ona_config_gazebo_mine.json --udp 0.0.0.0:47100 --command-post http://10.0.2.2:3000
+# [VM terminal] terminal 2: the mine mission through the three gateways
+cd ~/living_map/ona && ./simulate_zone.sh --config ona_config_gazebo_mine.json --mission ../writer_robot/missions/demo_mine.json
+
+--- N.2 With the Gazebo robots ---
+# [VM terminal] the Writer in the Gafsa mine, with its mine sensor head: dangers, resources and searched areas get beacons; the dashboard (Windows) draws the mine plan
+~/writer_robot_ws/run_explorer.sh mine headless ona
+# [VM terminal] every 10 s: CO, NO₂, H₂S, CH₄, O₂, radon, gamma, the sightings and the search coverage of each area
+tail -f /tmp/mine_sensors.log
+# [VM terminal] the air readings, once a second
+ros2 topic echo /writer/air
+# [VM terminal] every beacon event of the mine sensors
+grep -E "MINE EVENT|RESOURCE|VICTIM SEARCH" /tmp/mine_sensors.log
+# [VM terminal] after the Writer: the Executor in the same mine (the mission file names the world): miners first, roofs propped, bad air and radon ventilated
+~/writer_robot_ws/run_executor.sh headless ona
+# [VM terminal] the ready-made mine mission, no Writer run needed
+~/writer_robot_ws/run_executor.sh mine headless ona
+# [Browser] the Executor goes to take a sample ("taking a phosphate sample"); resources are targets only when briefed
+(dashboard) click a phosphate pin → Add to mission → Dispatch mission
+
+--- N.3 Change the mine ---
+# [VM terminal] after editing the layout, dangers, resources, search areas or gateways in tools/make_mine.py: rewrites the world, the site file, the dashboard plan and the mine ONA configs, then re-installs
+cd ~/living_map/writer_robot && python3 tools/make_mine.py && bash install.sh

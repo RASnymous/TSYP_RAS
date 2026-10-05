@@ -1,0 +1,490 @@
+<?xml version="1.0"?>
+<!-- =====================================================================
+  writer_robot.urdf.xacro  -  TSYP14 "The Living Map" Writer Robot
+  Stack: ROS 2 Lyrical + Gazebo Jetty (gz-sim)
+
+  4-WHEEL skid-steer autonomous ground explorer for a GPS-denied
+  contaminated zone. Carries:
+    - 2D LiDAR (gpu_lidar)             -> SLAM + Nav2 obstacle avoidance
+    - IMU                              -> odometry fusion (robot_localization)
+    - RGB-D camera (rgbd_camera)       -> computer-vision event detection
+    - Beacon magazine + servo trapdoor -> physical LoRa-beacon deposition
+    - Battery / onboard computer / GPS / LoRa antenna (mass + placement)
+
+  SERVO: the trapdoor is driven by the native gz JointPositionController
+  system (topic /trapdoor_cmd, gz.msgs.Double) - NOT ros2_control - so it
+  works reliably without a controller_manager. Joint states come from the gz
+  JointStatePublisher system (so the wheels spin and the flap moves in RViz).
+
+  Sensors are deliberately light (low rates / small images) for smooth
+  running inside a VM. Convention: X fwd, Y left, Z up.
+====================================================================== -->
+<robot name="writer_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- role:=writer (default: orange, beacon magazine + trapdoor)
+       role:=executor (blue, treatment canister instead of the magazine);
+       same base, wheels, LiDAR mast, camera, IMU for both -->
+  <xacro:arg name="role" default="writer"/>
+  <xacro:property name="role" value="$(arg role)"/>
+  <!-- mine:=true (the Gafsa mine): the mine sensor head is mounted - thermal camera, upward
+       roof scanner, multi-gas inlet, radon / gamma monitor, XRF wall probe, LED headlights.
+       Visual only here: in the simulation these instruments are emulated by the
+       mine_sensors node from the site file (worlds/gafsa_mine.json) -->
+  <xacro:arg name="mine" default="false"/>
+  <xacro:property name="mine" value="$(arg mine)"/>
+
+  <xacro:include filename="$(find writer_robot)/urdf/inertial_macros.xacro"/>
+
+  <!-- ============================ PARAMETERS ============================ -->
+  <xacro:property name="chassis_length"   value="0.40"/>
+  <xacro:property name="chassis_width"    value="0.30"/>
+  <xacro:property name="chassis_height"   value="0.15"/>
+  <xacro:property name="chassis_mass"     value="3.0"/>
+  <xacro:property name="ground_clearance" value="0.03"/>
+
+  <xacro:property name="wheel_radius"     value="0.05"/>
+  <xacro:property name="wheel_width"      value="0.04"/>
+  <xacro:property name="wheel_mass"       value="0.30"/>
+  <xacro:property name="wheel_separation" value="0.34"/>
+  <xacro:property name="wheel_base"       value="0.26"/>
+
+  <xacro:property name="chassis_z"        value="${ground_clearance + chassis_height/2 - wheel_radius}"/>
+  <xacro:property name="chassis_top"      value="${chassis_z + chassis_height/2}"/>
+
+  <xacro:property name="mag_x"            value="0.10"/>
+  <xacro:property name="mag_y"            value="0.10"/>
+  <xacro:property name="mag_h"            value="0.14"/>
+  <xacro:property name="mag_pos_x"        value="-0.12"/>
+
+  <xacro:property name="PI" value="3.14159265359"/>
+
+  <!-- ============================ MATERIALS ============================ -->
+  <material name="orange"><color rgba="1.0 0.5 0.0 1.0"/></material>
+  <material name="black"><color rgba="0.1 0.1 0.1 1.0"/></material>
+  <material name="grey"><color rgba="0.4 0.4 0.4 1.0"/></material>
+  <material name="blue"><color rgba="0.1 0.2 0.8 1.0"/></material>
+  <material name="green"><color rgba="0.1 0.7 0.2 1.0"/></material>
+  <material name="red"><color rgba="0.8 0.1 0.1 1.0"/></material>
+  <material name="yellow"><color rgba="0.9 0.8 0.1 1.0"/></material>
+  <material name="white"><color rgba="0.95 0.95 0.9 1.0"/></material>
+  <material name="ochre"><color rgba="0.75 0.55 0.3 1.0"/></material>
+
+  <!-- ========================= BASE FOOTPRINT ========================= -->
+  <link name="base_footprint"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================= CHASSIS ============================= -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${chassis_z}" rpy="0 0 0"/>
+      <geometry><box size="${chassis_length} ${chassis_width} ${chassis_height}"/></geometry>
+      <xacro:if value="${role == 'executor'}"><material name="blue"/></xacro:if>
+      <xacro:unless value="${role == 'executor'}"><material name="orange"/></xacro:unless>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${chassis_z}" rpy="0 0 0"/>
+      <geometry><box size="${chassis_length} ${chassis_width} ${chassis_height}"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}">
+      <origin xyz="0 0 ${chassis_z}" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <!-- ======================= WHEELS (4, skid-steer) ==================== -->
+  <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
+    <link name="${prefix}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      </collision>
+      <xacro:inertial_cylinder mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_width}">
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      </xacro:inertial_cylinder>
+    </link>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child  link="${prefix}_wheel_link"/>
+      <origin xyz="${x_reflect*wheel_base/2} ${y_reflect*wheel_separation/2} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.05" friction="0.1"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:wheel prefix="front_left"  x_reflect="1"  y_reflect="1"/>
+  <xacro:wheel prefix="front_right" x_reflect="1"  y_reflect="-1"/>
+  <xacro:wheel prefix="rear_left"   x_reflect="-1" y_reflect="1"/>
+  <xacro:wheel prefix="rear_right"  x_reflect="-1" y_reflect="-1"/>
+
+  <!-- ============================== LiDAR ============================== -->
+  <!-- On a 14 cm mast: the scan plane (0.34 m above the floor) passes ABOVE
+       the beacon magazine and the LoRa antenna, so the LiDAR never sees the
+       robot itself, and above the dropped beacons (< 0.17 m), so they never
+       appear as obstacles. Walls, rubble and hazard blocks are all taller. -->
+  <link name="lidar_link">
+    <visual><geometry><cylinder radius="0.035" length="0.04"/></geometry><material name="black"/></visual>
+    <visual>
+      <origin xyz="0 0 -0.09" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.012" length="0.14"/></geometry><material name="grey"/>
+    </visual>
+    <collision><geometry><cylinder radius="0.035" length="0.04"/></geometry></collision>
+    <xacro:inertial_cylinder mass="0.10" radius="0.035" length="0.04">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="lidar_link"/>
+    <origin xyz="0.10 0 ${chassis_top + 0.16}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- =============================== IMU =============================== -->
+  <link name="imu_link">
+    <visual><geometry><box size="0.02 0.02 0.01"/></geometry><material name="red"/></visual>
+    <xacro:inertial_box mass="0.02" x="0.02" y="0.02" z="0.01">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0 0 ${chassis_z}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========================= RGB-D CAMERA ========================= -->
+  <link name="camera_link">
+    <visual><geometry><box size="0.025 0.090 0.025"/></geometry><material name="blue"/></visual>
+    <collision><geometry><box size="0.025 0.090 0.025"/></geometry></collision>
+    <xacro:inertial_box mass="0.08" x="0.025" y="0.090" z="0.025">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="camera_link"/>
+    <origin xyz="${chassis_length/2 + 0.013} 0 ${chassis_z + 0.03}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="camera_link_optical"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_link_optical"/>
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+  </joint>
+
+  <!-- ===================== GPS MODULE (last fix) ===================== -->
+  <link name="gps_link">
+    <visual><geometry><box size="0.04 0.04 0.015"/></geometry><material name="green"/></visual>
+    <xacro:inertial_box mass="0.03" x="0.04" y="0.04" z="0.015">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="gps_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="gps_link"/>
+    <origin xyz="-0.05 0.10 ${chassis_top + 0.008}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===================== LoRa ANTENNA ===================== -->
+  <link name="lora_antenna_link">
+    <visual><geometry><cylinder radius="0.004" length="0.12"/></geometry><material name="black"/></visual>
+    <xacro:inertial_cylinder mass="0.01" radius="0.004" length="0.12">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+  <joint name="lora_antenna_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="lora_antenna_link"/>
+    <origin xyz="-0.05 -0.10 ${chassis_top + 0.06}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============ INTERNAL MASSES (battery + computer) ========= -->
+  <link name="battery_link">
+    <visual><geometry><box size="0.15 0.12 0.05"/></geometry><material name="grey"/></visual>
+    <xacro:inertial_box mass="1.50" x="0.15" y="0.12" z="0.05">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="battery_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="battery_link"/>
+    <origin xyz="0.0 0 ${ground_clearance - wheel_radius + 0.03}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="compute_link">
+    <visual><geometry><box size="0.09 0.09 0.02"/></geometry><material name="green"/></visual>
+    <xacro:inertial_box mass="0.30" x="0.09" y="0.09" z="0.02">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="compute_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="compute_link"/>
+    <origin xyz="0.10 0 ${chassis_z + 0.04}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============= BEACON DEPOSITION (magazine + servo trapdoor) ======= -->
+  <xacro:unless value="${role == 'executor'}">
+  <link name="beacon_magazine_link">
+    <visual><origin xyz="${-mag_x/2} 0 0"/><geometry><box size="0.006 ${mag_y} ${mag_h}"/></geometry><material name="yellow"/></visual>
+    <visual><origin xyz="${mag_x/2} 0 0"/><geometry><box size="0.006 ${mag_y} ${mag_h}"/></geometry><material name="yellow"/></visual>
+    <visual><origin xyz="0 ${mag_y/2} 0"/><geometry><box size="${mag_x} 0.006 ${mag_h}"/></geometry><material name="yellow"/></visual>
+    <visual><origin xyz="0 ${-mag_y/2} 0"/><geometry><box size="${mag_x} 0.006 ${mag_h}"/></geometry><material name="yellow"/></visual>
+    <collision><geometry><box size="${mag_x} ${mag_y} ${mag_h}"/></geometry></collision>
+    <xacro:inertial_box mass="0.35" x="${mag_x}" y="${mag_y}" z="${mag_h}">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="beacon_magazine_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="beacon_magazine_link"/>
+    <origin xyz="${mag_pos_x} 0 ${chassis_top + mag_h/2}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="trapdoor_link">
+    <visual><origin xyz="${mag_x/2} 0 0"/><geometry><box size="${mag_x} ${mag_y} 0.006"/></geometry><material name="black"/></visual>
+    <collision><origin xyz="${mag_x/2} 0 0"/><geometry><box size="${mag_x} ${mag_y} 0.006"/></geometry></collision>
+    <xacro:inertial_box mass="0.05" x="${mag_x}" y="${mag_y}" z="0.006">
+      <origin xyz="${mag_x/2} 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+  <joint name="trapdoor_joint" type="revolute">
+    <parent link="beacon_magazine_link"/>
+    <child  link="trapdoor_link"/>
+    <origin xyz="${-mag_x/2} 0 ${-mag_h/2}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.4" upper="0.0" effort="5.0" velocity="3.0"/>
+    <dynamics damping="0.05" friction="0.02"/>
+  </joint>
+  </xacro:unless>
+
+  <!-- ========== EXECUTOR: treatment canister + nozzle (visual) ========== -->
+  <!-- below the LiDAR scan plane, behind the camera -->
+  <xacro:if value="${role == 'executor'}">
+  <link name="tool_link">
+    <visual>
+      <geometry><cylinder radius="0.05" length="0.11"/></geometry><material name="grey"/>
+    </visual>
+    <visual>
+      <origin xyz="0.07 0 0.035" rpy="0 ${PI/2} 0"/>
+      <geometry><cylinder radius="0.012" length="0.08"/></geometry><material name="black"/>
+    </visual>
+    <collision><geometry><cylinder radius="0.05" length="0.11"/></geometry></collision>
+    <xacro:inertial_cylinder mass="0.40" radius="0.05" length="0.11">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+  <joint name="tool_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="tool_link"/>
+    <origin xyz="-0.10 0 ${chassis_top + 0.055}" rpy="0 0 0"/>
+  </joint>
+  </xacro:if>
+
+  <!-- ============ MINE SENSOR HEAD (mine:=true, the Gafsa mine) ============ -->
+  <!-- all below the LiDAR scan plane (0.34 m), none in front of the RGB-D camera,
+       no collision geometry (nothing for the LiDAR self-filter to learn) -->
+  <xacro:if value="${mine}">
+  <!-- thermal camera (FLIR Lepton class, 57 deg) above the RGB-D camera: fire, body heat -->
+  <link name="thermal_camera_link">
+    <visual><geometry><box size="0.03 0.05 0.035"/></geometry><material name="red"/></visual>
+    <xacro:inertial_box mass="0.03" x="0.03" y="0.05" z="0.035"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_box>
+  </link>
+  <joint name="thermal_camera_joint" type="fixed">
+    <parent link="base_link"/><child link="thermal_camera_link"/>
+    <origin xyz="${chassis_length/2 - 0.02} 0 ${chassis_top + 0.02}" rpy="0 0 0"/>
+  </joint>
+  <!-- roof scanner: upward depth sensor, roof sag and cracks ahead -->
+  <link name="roof_scanner_link">
+    <visual><geometry><cylinder radius="0.022" length="0.03"/></geometry><material name="black"/></visual>
+    <visual><origin xyz="0 0 0.016"/><geometry><cylinder radius="0.015" length="0.004"/></geometry><material name="blue"/></visual>
+    <xacro:inertial_cylinder mass="0.04" radius="0.022" length="0.03"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_cylinder>
+  </link>
+  <joint name="roof_scanner_joint" type="fixed">
+    <parent link="base_link"/><child link="roof_scanner_link"/>
+    <origin xyz="0.07 0.06 ${chassis_top + 0.015}" rpy="0 0 0"/>
+  </joint>
+  <!-- multi-gas detector inlet (CO, NO2, H2S, CH4 %LEL, O2): a sampling tube up high -->
+  <link name="gas_inlet_link">
+    <visual><geometry><cylinder radius="0.006" length="0.14"/></geometry><material name="white"/></visual>
+    <visual><origin xyz="0 0 0.075"/><geometry><sphere radius="0.012"/></geometry><material name="yellow"/></visual>
+    <xacro:inertial_cylinder mass="0.02" radius="0.006" length="0.14"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_cylinder>
+  </link>
+  <joint name="gas_inlet_joint" type="fixed">
+    <parent link="base_link"/><child link="gas_inlet_link"/>
+    <origin xyz="-0.17 0.11 ${chassis_top + 0.07}" rpy="0 0 0"/>
+  </joint>
+  <!-- radon monitor + gamma probe (the ore carries uranium) -->
+  <link name="radiation_monitor_link">
+    <visual><geometry><box size="0.05 0.05 0.04"/></geometry><material name="yellow"/></visual>
+    <xacro:inertial_box mass="0.08" x="0.05" y="0.05" z="0.04"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_box>
+  </link>
+  <joint name="radiation_monitor_joint" type="fixed">
+    <parent link="base_link"/><child link="radiation_monitor_link"/>
+    <origin xyz="0.0 -0.08 ${chassis_top + 0.02}" rpy="0 0 0"/>
+  </joint>
+  <!-- XRF / gamma wall probe on a short arm, aimed at the gallery wall: phosphate grade -->
+  <link name="wall_probe_link">
+    <visual><geometry><box size="0.12 0.02 0.02"/></geometry><material name="grey"/></visual>
+    <visual><origin xyz="0.065 0 0"/><geometry><box size="0.02 0.03 0.03"/></geometry><material name="ochre"/></visual>
+    <xacro:inertial_box mass="0.05" x="0.12" y="0.02" z="0.02"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_box>
+  </link>
+  <joint name="wall_probe_joint" type="fixed">
+    <parent link="base_link"/><child link="wall_probe_link"/>
+    <origin xyz="0.06 -0.13 ${chassis_top + 0.012}" rpy="0 0 ${-PI/2}"/>
+  </joint>
+  <!-- LED headlights: a mine is dark -->
+  <link name="headlight_left_link">
+    <visual><geometry><box size="0.012 0.04 0.02"/></geometry><material name="white"/></visual>
+    <xacro:inertial_box mass="0.01" x="0.012" y="0.04" z="0.02"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_box>
+  </link>
+  <joint name="headlight_left_joint" type="fixed">
+    <parent link="base_link"/><child link="headlight_left_link"/>
+    <origin xyz="${chassis_length/2 + 0.006} 0.10 ${chassis_z + 0.03}" rpy="0 0 0"/>
+  </joint>
+  <link name="headlight_right_link">
+    <visual><geometry><box size="0.012 0.04 0.02"/></geometry><material name="white"/></visual>
+    <xacro:inertial_box mass="0.01" x="0.012" y="0.04" z="0.02"><origin xyz="0 0 0" rpy="0 0 0"/></xacro:inertial_box>
+  </link>
+  <joint name="headlight_right_joint" type="fixed">
+    <parent link="base_link"/><child link="headlight_right_link"/>
+    <origin xyz="${chassis_length/2 + 0.006} -0.10 ${chassis_z + 0.03}" rpy="0 0 0"/>
+  </joint>
+  </xacro:if>
+
+  <!-- =========================== GZ-SIM PLUGINS ======================= -->
+
+  <!-- 4-wheel skid-steer differential drive -->
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>front_left_wheel_joint</left_joint>
+      <left_joint>rear_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+      <right_joint>rear_right_wheel_joint</right_joint>
+      <wheel_separation>${wheel_separation}</wheel_separation>
+      <wheel_radius>${wheel_radius}</wheel_radius>
+      <topic>/cmd_vel</topic>
+      <!-- wheel odometry: only used by the optional EKF (odom_source:=ekf) -->
+      <odom_topic>/wheel_odom</odom_topic>
+      <tf_topic>/wheel_odom_tf</tf_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+      <odom_publish_frequency>30</odom_publish_frequency>
+      <max_linear_acceleration>2.0</max_linear_acceleration>
+      <min_linear_acceleration>-2.0</min_linear_acceleration>
+      <max_angular_acceleration>3.0</max_angular_acceleration>
+      <min_angular_acceleration>-3.0</min_angular_acceleration>
+    </plugin>
+  </gazebo>
+
+  <!-- Odometry for the simulation: the robot's true motion from Gazebo, published
+       as /odom (nav_msgs/Odometry) and as the TF odom -> base_footprint
+       (/odom_tf, bridged to /tf by gazebo_sim.launch.py). A 4-wheel skid-steer
+       slides when it turns, so wheel odometry gets the heading wrong; with this,
+       SLAM always knows how far the robot moved and turned. (The wheel + IMU EKF
+       remains available: odom_source:=ekf.) -->
+  <gazebo>
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <odom_topic>/odom</odom_topic>
+      <tf_topic>/odom_tf</tf_topic>
+      <odom_publish_frequency>30</odom_publish_frequency>
+      <dimensions>2</dimensions>
+    </plugin>
+  </gazebo>
+
+  <!-- Native servo for the trapdoor (no ros2_control). Command with a
+       gz.msgs.Double on /trapdoor_cmd:  0.0 = closed,  -1.2 = open. -->
+  <xacro:unless value="${role == 'executor'}">
+  <gazebo>
+    <plugin filename="gz-sim-joint-position-controller-system"
+            name="gz::sim::systems::JointPositionController">
+      <joint_name>trapdoor_joint</joint_name>
+      <topic>trapdoor_cmd</topic>
+      <p_gain>8.0</p_gain>
+      <i_gain>0.2</i_gain>
+      <d_gain>0.5</d_gain>
+      <cmd_max>10.0</cmd_max>
+      <cmd_min>-10.0</cmd_min>
+    </plugin>
+  </gazebo>
+  </xacro:unless>
+
+  <!-- Publish all joint states (wheels + trapdoor) for TF / RViz -->
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+      <topic>joint_states</topic>
+    </plugin>
+  </gazebo>
+
+  <!-- 2D LiDAR (light: 180 samples @ 8 Hz) -->
+  <gazebo reference="lidar_link">
+    <sensor name="lidar" type="gpu_lidar">
+      <topic>scan</topic>
+      <gz_frame_id>lidar_link</gz_frame_id>
+      <update_rate>8</update_rate>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>180</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range><min>0.15</min><max>12.0</max><resolution>0.02</resolution></range>
+        <noise><type>gaussian</type><mean>0.0</mean><stddev>0.01</stddev></noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU -->
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <topic>imu</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
+      <update_rate>50</update_rate>
+      <always_on>1</always_on>
+    </sensor>
+  </gazebo>
+
+  <!-- RGB-D camera (light: 320x240 @ 6 Hz) -->
+  <gazebo reference="camera_link">
+    <sensor name="rgbd_camera" type="rgbd_camera">
+      <topic>camera</topic>
+      <gz_frame_id>camera_link_optical</gz_frame_id>
+      <update_rate>6</update_rate>
+      <always_on>1</always_on>
+      <camera>
+        <horizontal_fov>1.089</horizontal_fov>
+        <image><width>320</width><height>240</height><format>R8G8B8</format></image>
+        <clip><near>0.1</near><far>15.0</far></clip>
+        <depth_camera><clip><near>0.1</near><far>15.0</far></clip></depth_camera>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- Wheel contact tuning (lower lateral friction for smooth skid-steer turns) -->
+  <xacro:macro name="wheel_gz" params="prefix">
+    <gazebo reference="${prefix}_wheel_link">
+      <mu1>1.0</mu1><mu2>0.7</mu2><kp>1e6</kp><kd>1.0</kd>
+    </gazebo>
+  </xacro:macro>
+  <xacro:wheel_gz prefix="front_left"/>
+  <xacro:wheel_gz prefix="front_right"/>
+  <xacro:wheel_gz prefix="rear_left"/>
+  <xacro:wheel_gz prefix="rear_right"/>
+
+</robot>

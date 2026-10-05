@@ -1,0 +1,57 @@
+{
+ "name": "ONA-Gafsa-mine",
+ "site": {
+  "id": "gafsa_mine",
+  "name": "Gafsa phosphate basin: simulated room-and-pillar panel (Metlaoui area)",
+  "plan": "sites/gafsa_mine.geojson",
+  "underground": true
+ },
+ "key": "demo",
+ "net_id": 42,
+ "quorum": 2,
+ "command_post": "http://10.0.2.2:3000",
+ "anchor": {
+  "lat": 34.3159,
+  "lon": 8.4184,
+  "alt": 300.0,
+  "map_yaw_deg": 0.0
+ },
+ "gateways": {
+  "gw1": {
+   "local": [
+    -1.0,
+    0.0,
+    1.8
+   ],
+   "note": "portal: sees down the drift and the main haulage row"
+  },
+  "gw2": {
+   "local": [
+    9.4,
+    6.8,
+    1.8
+   ],
+   "note": "north-west junction, on the cable backbone"
+  },
+  "gw3": {
+   "local": [
+    23.0,
+    -6.8,
+    1.8
+   ],
+   "note": "south junction of column 23, on the cable backbone"
+  }
+ },
+ "radio": {
+  "medium": "rock",
+  "rock_db_per_m": 8.0,
+  "tof_needs_los": true
+ },
+ "tracker": {
+  "robot_height_m": 0.3,
+  "ping_window_s": 1.0,
+  "rssi_ranging": false
+ },
+ "unconfirmed_hold_s": 4.0,
+ "strict": false
+}

@@ -1,0 +1,2 @@
+numpy>=1.21
+pyserial>=3.5   # only for real gateway boards (--serial)

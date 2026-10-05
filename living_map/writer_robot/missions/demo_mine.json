@@ -1,0 +1,2358 @@
+{
+ "format": "living-map-mission/1",
+ "anchor": {
+  "lat": 34.3159,
+  "lon": 8.4184,
+  "map_yaw_deg": 0.0
+ },
+ "net_id": 42,
+ "key": "demo",
+ "started": 1790000000,
+ "updated": 1790000432,
+ "world": "gafsa_mine.world",
+ "home": [
+  0.0,
+  0.0
+ ],
+ "beacons": [
+  {
+   "id": 0,
+   "event_type": "exit",
+   "drop": [
+    -0.12,
+    0.0
+   ],
+   "event": [
+    -0.12,
+    0.0
+   ],
+   "record": {
+    "beacon_id": 0,
+    "kind": "EXIT",
+    "gps": {
+     "lat": 34.3159,
+     "lon": 8.4183987,
+     "err_m": 0.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000000
+   },
+   "frame": "212a00000f00000001000700d8307414b38b04050300ff00ffff0000803bb16a40ec804336b3a2c1920fa9b9"
+  },
+  {
+   "id": 1,
+   "event_type": "phosphate",
+   "drop": [
+    -0.12,
+    0.0
+   ],
+   "event": [
+    0.408,
+    1.437
+   ],
+   "record": {
+    "beacon_id": 1,
+    "kind": "PHOSPHATE",
+    "gps": {
+     "lat": 34.3159129,
+     "lon": 8.4184044,
+     "err_m": 0.7,
+     "src": "slam"
+    },
+    "severity": 70,
+    "confidence": 0.85,
+    "ts": 1790000000,
+    "next": {
+     "id": 0,
+     "dist_m": 0.0,
+     "bearing_deg": 0.0
+    }
+   },
+   "frame": "212a01000f0001000100080359317414ec8b04050746d90000000000803bb16a40ec4065c00dbab4e0e1120e",
+   "detail": "17.5 % P2O5 (poor), layer C VII"
+  },
+  {
+   "id": 2,
+   "event_type": "searched",
+   "drop": [
+    0.793,
+    -0.119
+   ],
+   "event": [
+    3.25,
+    0.0
+   ],
+   "record": {
+    "beacon_id": 2,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159,
+     "lon": 8.4184353,
+     "err_m": 0.9,
+     "src": "slam"
+    },
+    "severity": 86,
+    "confidence": 0.9,
+    "ts": 1790000009,
+    "next": {
+     "id": 0,
+     "dist_m": 0.9,
+     "bearing_deg": 277.4
+    }
+   },
+   "frame": "212a02000f00020001000b03d8307414218d04050956e6c500000900893bb16ae010d002dbe3b32b11584ee9",
+   "detail": "access drift: searched 86 %, 0 victims found"
+  },
+  {
+   "id": 3,
+   "event_type": "waypoint",
+   "drop": [
+    1.94,
+    -0.385
+   ],
+   "event": [
+    1.94,
+    -0.385
+   ],
+   "record": {
+    "beacon_id": 3,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158965,
+     "lon": 8.4184211,
+     "err_m": 0.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000013,
+    "next": {
+     "id": 2,
+     "dist_m": 1.2,
+     "bearing_deg": 283.1
+    }
+   },
+   "frame": "212a03000f00030001000003b5307414938c04050300ffc902000c008d3bb16ac021e010cda4dc3e3603ae37"
+  },
+  {
+   "id": 4,
+   "event_type": "waypoint",
+   "drop": [
+    3.497,
+    1.284
+   ],
+   "event": [
+    3.497,
+    1.284
+   ],
+   "record": {
+    "beacon_id": 4,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159115,
+     "lon": 8.418438,
+     "err_m": 0.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000017,
+    "next": {
+     "id": 3,
+     "dist_m": 2.3,
+     "bearing_deg": 223.0
+    }
+   },
+   "frame": "212a04000f000400010000034b3174143c8d04050400ff9f03001700913bb16ac021e010ae43ca99140b37f0"
+  },
+  {
+   "id": 5,
+   "event_type": "searched",
+   "drop": [
+    3.555,
+    1.444
+   ],
+   "event": [
+    4.4,
+    4.8
+   ],
+   "record": {
+    "beacon_id": 5,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159431,
+     "lon": 8.4184479,
+     "err_m": 1.2,
+     "src": "slam"
+    },
+    "severity": 86,
+    "confidence": 0.9,
+    "ts": 1790000017,
+    "next": {
+     "id": 4,
+     "dist_m": 0.2,
+     "bearing_deg": 199.9
+    }
+   },
+   "frame": "212a05000f00050001000b03873274149f8d04050c56e68e04000200913bb16ae010d00293cb1c7e60f66310",
+   "detail": "dead-end gallery: searched 86 %, 0 victims found"
+  },
+  {
+   "id": 6,
+   "event_type": "waypoint",
+   "drop": [
+    3.803,
+    3.776
+   ],
+   "event": [
+    3.803,
+    3.776
+   ],
+   "record": {
+    "beacon_id": 6,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159339,
+     "lon": 8.4184414,
+     "err_m": 0.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000021,
+    "next": {
+     "id": 5,
+     "dist_m": 2.3,
+     "bearing_deg": 186.1
+    }
+   },
+   "frame": "212a06000f000600010000032b3274145e8d04050400ff8405001700953bb16ac021e010aa7c18b977e54442"
+  },
+  {
+   "id": 7,
+   "event_type": "radiation",
+   "drop": [
+    3.771,
+    4.191
+   ],
+   "event": [
+    4.317,
+    6.649
+   ],
+   "record": {
+    "beacon_id": 7,
+    "kind": "RADIATION",
+    "gps": {
+     "lat": 34.3159597,
+     "lon": 8.418447,
+     "err_m": 1.1,
+     "src": "slam"
+    },
+    "severity": 64,
+    "confidence": 0.9,
+    "ts": 1790000021,
+    "next": {
+     "id": 6,
+     "dist_m": 0.4,
+     "bearing_deg": 175.6
+    }
+   },
+   "frame": "212a07000f000700010003032d337414968d04050b40e67d06000400953bb16ae010700810a07d4d74e1c23b",
+   "detail": "radon 1028 Bq/m3"
+  },
+  {
+   "id": 8,
+   "event_type": "waypoint",
+   "drop": [
+    4.772,
+    1.44
+   ],
+   "event": [
+    4.772,
+    1.44
+   ],
+   "record": {
+    "beacon_id": 8,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159129,
+     "lon": 8.4184519,
+     "err_m": 0.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000030,
+    "next": {
+     "id": 6,
+     "dist_m": 2.5,
+     "bearing_deg": 337.5
+    }
+   },
+   "frame": "212a08000f0008000100000359317414c78d04050500fff0060019009e3bb16ac021e010f2ab0cac5032eda3"
+  },
+  {
+   "id": 9,
+   "event_type": "waypoint",
+   "drop": [
+    6.685,
+    0.619
+   ],
+   "event": [
+    6.685,
+    0.619
+   ],
+   "record": {
+    "beacon_id": 9,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159056,
+     "lon": 8.4184727,
+     "err_m": 0.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000034,
+    "next": {
+     "id": 8,
+     "dist_m": 2.1,
+     "bearing_deg": 293.2
+    }
+   },
+   "frame": "212a09000f0009000100000310317414978e04050600ffd008001500a23bb16ac021e0100979a6350c88b3fd"
+  },
+  {
+   "id": 10,
+   "event_type": "waypoint",
+   "drop": [
+    8.232,
+    0.909
+   ],
+   "event": [
+    8.232,
+    0.909
+   ],
+   "record": {
+    "beacon_id": 10,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159082,
+     "lon": 8.4184895,
+     "err_m": 0.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000038,
+    "next": {
+     "id": 9,
+     "dist_m": 1.6,
+     "bearing_deg": 259.4
+    }
+   },
+   "frame": "212a0a000f000a00010000032a3174143f8f04050600ffb809001000a63bb16ac021e010239cdbdb38387c9f"
+  },
+  {
+   "id": 11,
+   "event_type": "waypoint",
+   "drop": [
+    8.583,
+    1.692
+   ],
+   "event": [
+    8.583,
+    1.692
+   ],
+   "record": {
+    "beacon_id": 11,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159152,
+     "lon": 8.4184934,
+     "err_m": 0.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000040,
+    "next": {
+     "id": 10,
+     "dist_m": 0.9,
+     "bearing_deg": 204.1
+    }
+   },
+   "frame": "212a0b000f000b000100000370317414668f04050600ff910a000900a83bb16ac021e0104dd414f57da1c347"
+  },
+  {
+   "id": 12,
+   "event_type": "waypoint",
+   "drop": [
+    9.198,
+    4.163
+   ],
+   "event": [
+    9.198,
+    4.163
+   ],
+   "record": {
+    "beacon_id": 12,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159374,
+     "lon": 8.4185,
+     "err_m": 0.7,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000044,
+    "next": {
+     "id": 11,
+     "dist_m": 2.5,
+     "bearing_deg": 194.0
+    }
+   },
+   "frame": "212a0c000f000c00010000034e327414a88f04050700ff8a0b001900ac3bb16ac021e01022f6cf4115b4350f"
+  },
+  {
+   "id": 13,
+   "event_type": "waypoint",
+   "drop": [
+    10.558,
+    5.953
+   ],
+   "event": [
+    10.558,
+    5.953
+   ],
+   "record": {
+    "beacon_id": 13,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159535,
+     "lon": 8.4185148,
+     "err_m": 0.7,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000048,
+    "next": {
+     "id": 12,
+     "dist_m": 2.2,
+     "bearing_deg": 217.2
+    }
+   },
+   "frame": "212a0d000f000d0001000003ef3274143c9004050700ff9a0c001600b03bb16ac021e010ce0dae23ac4b12b3"
+  },
+  {
+   "id": 14,
+   "event_type": "gemstone",
+   "drop": [
+    12.813,
+    6.198
+   ],
+   "event": [
+    15.505,
+    7.558
+   ],
+   "record": {
+    "beacon_id": 14,
+    "kind": "GEMSTONE",
+    "gps": {
+     "lat": 34.3159679,
+     "lon": 8.4185686,
+     "err_m": 1.5,
+     "src": "slam"
+    },
+    "severity": 50,
+    "confidence": 0.6,
+    "ts": 1790000053,
+    "next": {
+     "id": 13,
+     "dist_m": 2.3,
+     "bearing_deg": 263.8
+    }
+   },
+   "frame": "212a0e000f000e0001000a037f337414569204050f3299bc0d001700b53bb16a40ec4065038562b0616e12be",
+   "detail": "crystal on camera, XRF to confirm - demonstration target"
+  },
+  {
+   "id": 15,
+   "event_type": "waypoint",
+   "drop": [
+    13.092,
+    6.188
+   ],
+   "event": [
+    13.092,
+    6.188
+   ],
+   "record": {
+    "beacon_id": 15,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159556,
+     "lon": 8.4185424,
+     "err_m": 0.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000053,
+    "next": {
+     "id": 14,
+     "dist_m": 0.3,
+     "bearing_deg": 272.1
+    }
+   },
+   "frame": "212a0f000f000f000100000304337414509104050800ffc10e000300b53bb16ac021e010534f46afb398394c"
+  },
+  {
+   "id": 16,
+   "event_type": "waypoint",
+   "drop": [
+    15.023,
+    5.871
+   ],
+   "event": [
+    15.023,
+    5.871
+   ],
+   "record": {
+    "beacon_id": 16,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159527,
+     "lon": 8.4185634,
+     "err_m": 0.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000056,
+    "next": {
+     "id": 15,
+     "dist_m": 2.0,
+     "bearing_deg": 279.3
+    }
+   },
+   "frame": "212a10000f00100001000003e7327414229204050800ffc70f001400b83bb16ac021e01079fa0f1f7844abb4"
+  },
+  {
+   "id": 17,
+   "event_type": "waypoint",
+   "drop": [
+    15.5,
+    5.201
+   ],
+   "event": [
+    15.5,
+    5.201
+   ],
+   "record": {
+    "beacon_id": 17,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159467,
+     "lon": 8.4185686,
+     "err_m": 0.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000059,
+    "next": {
+     "id": 16,
+     "dist_m": 0.8,
+     "bearing_deg": 324.6
+    }
+   },
+   "frame": "212a11000f00110001000003ab327414569204050800ffe710000800bb3bb16ac021e010651fb50291ec298e"
+  },
+  {
+   "id": 18,
+   "event_type": "waypoint",
+   "drop": [
+    16.717,
+    2.887
+   ],
+   "event": [
+    16.717,
+    2.887
+   ],
+   "record": {
+    "beacon_id": 18,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159259,
+     "lon": 8.4185818,
+     "err_m": 0.9,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000063,
+    "next": {
+     "id": 17,
+     "dist_m": 2.6,
+     "bearing_deg": 332.3
+    }
+   },
+   "frame": "212a12000f00120001000003db317414da9204050900ffec11001a00bf3bb16ac021e0104b519c16b0536351"
+  },
+  {
+   "id": 19,
+   "event_type": "waypoint",
+   "drop": [
+    17.321,
+    0.787
+   ],
+   "event": [
+    17.321,
+    0.787
+   ],
+   "record": {
+    "beacon_id": 19,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159071,
+     "lon": 8.4185884,
+     "err_m": 0.9,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000070,
+    "next": {
+     "id": 18,
+     "dist_m": 2.2,
+     "bearing_deg": 344.0
+    }
+   },
+   "frame": "212a13000f001300010000031f3174141c9304050900fff512001600c63bb16ac021e010f0c2cf9c9ba4de91"
+  },
+  {
+   "id": 20,
+   "event_type": "waypoint",
+   "drop": [
+    19.819,
+    0.152
+   ],
+   "event": [
+    19.819,
+    0.152
+   ],
+   "record": {
+    "beacon_id": 20,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159014,
+     "lon": 8.4186156,
+     "err_m": 1.0,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000075,
+    "next": {
+     "id": 19,
+     "dist_m": 2.6,
+     "bearing_deg": 284.3
+    }
+   },
+   "frame": "212a14000f00140001000003e63074142c9404050a00ffca13001a00cb3bb16ac021e010723eef9c8f318287"
+  },
+  {
+   "id": 21,
+   "event_type": "waypoint",
+   "drop": [
+    21.966,
+    -1.163
+   ],
+   "event": [
+    21.966,
+    -1.163
+   ],
+   "record": {
+    "beacon_id": 21,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158896,
+     "lon": 8.4186389,
+     "err_m": 1.0,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000080,
+    "next": {
+     "id": 20,
+     "dist_m": 2.5,
+     "bearing_deg": 301.5
+    }
+   },
+   "frame": "212a15000f0015000100000370307414159504050a00ffd614001900d03bb16ac021e0100cd1e82608e19fa7"
+  },
+  {
+   "id": 22,
+   "event_type": "waypoint",
+   "drop": [
+    22.391,
+    -2.028
+   ],
+   "event": [
+    22.391,
+    -2.028
+   ],
+   "record": {
+    "beacon_id": 22,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158818,
+     "lon": 8.4186435,
+     "err_m": 1.0,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000082,
+    "next": {
+     "id": 21,
+     "dist_m": 1.0,
+     "bearing_deg": 333.8
+    }
+   },
+   "frame": "212a16000f0016000100000322307414439504050a00ffed15000a00d23bb16ac021e010b332105d6f5a87e8"
+  },
+  {
+   "id": 23,
+   "event_type": "fire",
+   "drop": [
+    22.376,
+    -4.437
+   ],
+   "event": [
+    19.412,
+    -7.513
+   ],
+   "record": {
+    "beacon_id": 23,
+    "kind": "THERMAL",
+    "gps": {
+     "lat": 34.3158325,
+     "lon": 8.4186111,
+     "err_m": 2.1,
+     "src": "slam"
+    },
+    "severity": 70,
+    "confidence": 0.9,
+    "ts": 1790000089,
+    "next": {
+     "id": 22,
+     "dist_m": 2.4,
+     "bearing_deg": 0.4
+    }
+   },
+   "frame": "212a17000f00170001000403352e7414ff9304051546e60016001800d93bb16a68017800f9852d051a86cdc3",
+   "detail": "hot spot 420 C"
+  },
+  {
+   "id": 24,
+   "event_type": "waypoint",
+   "drop": [
+    22.342,
+    -4.566
+   ],
+   "event": [
+    22.342,
+    -4.566
+   ],
+   "record": {
+    "beacon_id": 24,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.315859,
+     "lon": 8.418643,
+     "err_m": 1.1,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000089,
+    "next": {
+     "id": 23,
+     "dist_m": 0.1,
+     "bearing_deg": 14.8
+    }
+   },
+   "frame": "212a18000f001800010000033e2f74143e9504050b00ff0b17000100d93bb16ac021e010db77cb2f0bc8636f"
+  },
+  {
+   "id": 25,
+   "event_type": "waypoint",
+   "drop": [
+    21.676,
+    -6.091
+   ],
+   "event": [
+    21.676,
+    -6.091
+   ],
+   "record": {
+    "beacon_id": 25,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158453,
+     "lon": 8.4186358,
+     "err_m": 1.1,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000094,
+    "next": {
+     "id": 24,
+     "dist_m": 1.7,
+     "bearing_deg": 23.6
+    }
+   },
+   "frame": "212a19000f00190001000003b52e7414f69404050b00ff1118001100de3bb16ac021e01087b929f7ee9c1092"
+  },
+  {
+   "id": 26,
+   "event_type": "waypoint",
+   "drop": [
+    20.9,
+    -6.294
+   ],
+   "event": [
+    20.9,
+    -6.294
+   ],
+   "record": {
+    "beacon_id": 26,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158435,
+     "lon": 8.4186273,
+     "err_m": 1.1,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000096,
+    "next": {
+     "id": 25,
+     "dist_m": 0.8,
+     "bearing_deg": 75.3
+    }
+   },
+   "frame": "212a1a000f001a0001000003a32e7414a19404050b00ff3619000800e03bb16ac021e01077eac0990f0aea14"
+  },
+  {
+   "id": 27,
+   "event_type": "searched",
+   "drop": [
+    19.895,
+    -6.253
+   ],
+   "event": [
+    16.2,
+    3.4
+   ],
+   "record": {
+    "beacon_id": 27,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159305,
+     "lon": 8.4185762,
+     "err_m": 3.7,
+     "src": "slam"
+    },
+    "severity": 85,
+    "confidence": 0.9,
+    "ts": 1790000097,
+    "next": {
+     "id": 26,
+     "dist_m": 1.0,
+     "bearing_deg": 92.3
+    }
+   },
+   "frame": "212a1b000f001b0001000b0309327414a29204052555e6421a000a00e13bb16ae010d002fe47edc3224873ce",
+   "detail": "cross-cuts, column 16: searched 85 %, 0 victims found"
+  },
+  {
+   "id": 28,
+   "event_type": "waypoint",
+   "drop": [
+    18.967,
+    -6.359
+   ],
+   "event": [
+    18.967,
+    -6.359
+   ],
+   "record": {
+    "beacon_id": 28,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158429,
+     "lon": 8.4186063,
+     "err_m": 1.2,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000100,
+    "next": {
+     "id": 27,
+     "dist_m": 0.9,
+     "bearing_deg": 83.5
+    }
+   },
+   "frame": "212a1c000f001c00010000039d2e7414cf9304050c00ff3b1b000900e43bb16ac021e0102941e40d6f56230b"
+  },
+  {
+   "id": 29,
+   "event_type": "waypoint",
+   "drop": [
+    18.174,
+    -6.211
+   ],
+   "event": [
+    18.174,
+    -6.211
+   ],
+   "record": {
+    "beacon_id": 29,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158442,
+     "lon": 8.4185977,
+     "err_m": 1.2,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000102,
+    "next": {
+     "id": 28,
+     "dist_m": 0.8,
+     "bearing_deg": 100.6
+    }
+   },
+   "frame": "212a1d000f001d0001000003aa2e7414799304050c00ff481c000800e63bb16ac021e0100946b258eab15d70"
+  },
+  {
+   "id": 30,
+   "event_type": "waypoint",
+   "drop": [
+    17.039,
+    -5.707
+   ],
+   "event": [
+    17.039,
+    -5.707
+   ],
+   "record": {
+    "beacon_id": 30,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158487,
+     "lon": 8.4185853,
+     "err_m": 1.2,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000105,
+    "next": {
+     "id": 29,
+     "dist_m": 1.2,
+     "bearing_deg": 113.9
+    }
+   },
+   "frame": "212a1e000f001e0001000003d72e7414fd9204050c00ff511d000c00e93bb16ac021e010c4c3d5011f5a9567"
+  },
+  {
+   "id": 31,
+   "event_type": "waypoint",
+   "drop": [
+    16.338,
+    -5.933
+   ],
+   "event": [
+    16.338,
+    -5.933
+   ],
+   "record": {
+    "beacon_id": 31,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158467,
+     "lon": 8.4185777,
+     "err_m": 1.2,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000111,
+    "next": {
+     "id": 30,
+     "dist_m": 0.7,
+     "bearing_deg": 72.1
+    }
+   },
+   "frame": "212a1f000f001f0001000003c32e7414b19204050c00ff331e000700ef3bb16ac021e01049405cd7809a6041"
+  },
+  {
+   "id": 32,
+   "event_type": "waypoint",
+   "drop": [
+    15.664,
+    -6.432
+   ],
+   "event": [
+    15.664,
+    -6.432
+   ],
+   "record": {
+    "beacon_id": 32,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158422,
+     "lon": 8.4185704,
+     "err_m": 1.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000115,
+    "next": {
+     "id": 31,
+     "dist_m": 0.8,
+     "bearing_deg": 53.5
+    }
+   },
+   "frame": "212a20000f00200001000003962e7414689204050d00ff261f000800f33bb16ac021e01045955bbceea66c57"
+  },
+  {
+   "id": 33,
+   "event_type": "waypoint",
+   "drop": [
+    13.126,
+    -6.342
+   ],
+   "event": [
+    13.126,
+    -6.342
+   ],
+   "record": {
+    "beacon_id": 33,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.315843,
+     "lon": 8.4185428,
+     "err_m": 1.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000119,
+    "next": {
+     "id": 32,
+     "dist_m": 2.5,
+     "bearing_deg": 92.0
+    }
+   },
+   "frame": "212a21000f002100010000039e2e7414549104050d00ff4120001900f73bb16ac021e010da2ef6770b4dc5cb"
+  },
+  {
+   "id": 34,
+   "event_type": "searched",
+   "drop": [
+    12.406,
+    -6.854
+   ],
+   "event": [
+    9.4,
+    3.4
+   ],
+   "record": {
+    "beacon_id": 34,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159305,
+     "lon": 8.4185022,
+     "err_m": 4.0,
+     "src": "slam"
+    },
+    "severity": 86,
+    "confidence": 0.9,
+    "ts": 1790000123,
+    "next": {
+     "id": 33,
+     "dist_m": 0.9,
+     "bearing_deg": 54.6
+    }
+   },
+   "frame": "212a22000f00220001000b0309327414be8f04052856e62721000900fb3bb16ae010d002c7ec641a04322aba",
+   "detail": "cross-cuts, column 9: searched 86 %, 0 victims found"
+  },
+  {
+   "id": 35,
+   "event_type": "gold",
+   "drop": [
+    12.213,
+    -6.786
+   ],
+   "event": [
+    9.196,
+    -6.289
+   ],
+   "record": {
+    "beacon_id": 35,
+    "kind": "GOLD",
+    "gps": {
+     "lat": 34.3158435,
+     "lon": 8.4185,
+     "err_m": 2.1,
+     "src": "slam"
+    },
+    "severity": 50,
+    "confidence": 0.6,
+    "ts": 1790000123,
+    "next": {
+     "id": 34,
+     "dist_m": 0.2,
+     "bearing_deg": 109.4
+    }
+   },
+   "frame": "212a23000f00230001000903a32e7414a88f04051532994e22000200fb3bb16a40ec40656176e360eaeeff00",
+   "detail": "gold (Au) signal on XRF - demonstration target"
+  },
+  {
+   "id": 36,
+   "event_type": "waypoint",
+   "drop": [
+    10.09,
+    -5.747
+   ],
+   "event": [
+    10.09,
+    -5.747
+   ],
+   "record": {
+    "beacon_id": 36,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158484,
+     "lon": 8.4185097,
+     "err_m": 1.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000128,
+    "next": {
+     "id": 35,
+     "dist_m": 2.4,
+     "bearing_deg": 116.1
+    }
+   },
+   "frame": "212a24000f00240001000003d42e7414099004050e00ff5323001800003cb16ac021e010b44e24578bc11786"
+  },
+  {
+   "id": 37,
+   "event_type": "waypoint",
+   "drop": [
+    9.869,
+    -4.913
+   ],
+   "event": [
+    9.869,
+    -4.913
+   ],
+   "record": {
+    "beacon_id": 37,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158559,
+     "lon": 8.4185073,
+     "err_m": 1.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000137,
+    "next": {
+     "id": 36,
+     "dist_m": 0.9,
+     "bearing_deg": 165.2
+    }
+   },
+   "frame": "212a25000f002500010000031f2f7414f18f04050e00ff7524000900093cb16ac021e0102f3ba340c2bd5916"
+  },
+  {
+   "id": 38,
+   "event_type": "waypoint",
+   "drop": [
+    9.863,
+    -2.315
+   ],
+   "event": [
+    9.863,
+    -2.315
+   ],
+   "record": {
+    "beacon_id": 38,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158792,
+     "lon": 8.4185073,
+     "err_m": 1.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000141,
+    "next": {
+     "id": 37,
+     "dist_m": 2.6,
+     "bearing_deg": 179.9
+    }
+   },
+   "frame": "212a26000f0026000100000308307414f18f04050f00ff8025001a000d3cb16ac021e010cb27aca9465bc5d2"
+  },
+  {
+   "id": 39,
+   "event_type": "phosphate",
+   "drop": [
+    10.263,
+    -1.523
+   ],
+   "event": [
+    11.108,
+    -1.398
+   ],
+   "record": {
+    "beacon_id": 39,
+    "kind": "PHOSPHATE",
+    "gps": {
+     "lat": 34.3158874,
+     "lon": 8.4185208,
+     "err_m": 1.7,
+     "src": "slam"
+    },
+    "severity": 96,
+    "confidence": 0.85,
+    "ts": 1790000142,
+    "next": {
+     "id": 38,
+     "dist_m": 0.9,
+     "bearing_deg": 206.8
+    }
+   },
+   "frame": "212a27000f002700010008035a307414789004051160d993260009000e3cb16a40ec4065a9f16130474220e5",
+   "detail": "23.9 % P2O5 (medium), layer C V-VI"
+  },
+  {
+   "id": 40,
+   "event_type": "waypoint",
+   "drop": [
+    10.711,
+    -0.609
+   ],
+   "event": [
+    10.711,
+    -0.609
+   ],
+   "record": {
+    "beacon_id": 40,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158945,
+     "lon": 8.4185165,
+     "err_m": 1.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000145,
+    "next": {
+     "id": 39,
+     "dist_m": 1.0,
+     "bearing_deg": 206.1
+    }
+   },
+   "frame": "212a28000f00280001000003a13074144d9004050f00ff9327000a00113cb16ac021e010872b276c786bd4b7"
+  },
+  {
+   "id": 41,
+   "event_type": "waypoint",
+   "drop": [
+    13.245,
+    -0.548
+   ],
+   "event": [
+    13.245,
+    -0.548
+   ],
+   "record": {
+    "beacon_id": 41,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158951,
+     "lon": 8.4185441,
+     "err_m": 1.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000151,
+    "next": {
+     "id": 40,
+     "dist_m": 2.5,
+     "bearing_deg": 268.6
+    }
+   },
+   "frame": "212a29000f00290001000003a7307414619104050f00ffbf28001900173cb16ac021e0101804bc1b32ad49ef"
+  },
+  {
+   "id": 42,
+   "event_type": "waypoint",
+   "drop": [
+    14.074,
+    -0.345
+   ],
+   "event": [
+    14.074,
+    -0.345
+   ],
+   "record": {
+    "beacon_id": 42,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158969,
+     "lon": 8.4185531,
+     "err_m": 1.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000157,
+    "next": {
+     "id": 41,
+     "dist_m": 0.9,
+     "bearing_deg": 256.2
+    }
+   },
+   "frame": "212a2a000f002a0001000003b9307414bb9104051000ffb6290009001d3cb16ac021e010ee36ae0865c5d6db"
+  },
+  {
+   "id": 43,
+   "event_type": "waypoint",
+   "drop": [
+    15.464,
+    1.813
+   ],
+   "event": [
+    15.464,
+    1.813
+   ],
+   "record": {
+    "beacon_id": 43,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159163,
+     "lon": 8.4185682,
+     "err_m": 1.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000161,
+    "next": {
+     "id": 42,
+     "dist_m": 2.6,
+     "bearing_deg": 212.8
+    }
+   },
+   "frame": "212a2b000f002b00010000037b317414529204051000ff972a001a00213cb16ac021e01072a221d1cf9dbd15"
+  },
+  {
+   "id": 44,
+   "event_type": "structural",
+   "drop": [
+    16.361,
+    5.33
+   ],
+   "event": [
+    19.615,
+    6.747
+   ],
+   "record": {
+    "beacon_id": 44,
+    "kind": "STRUCTURAL",
+    "gps": {
+     "lat": 34.3159606,
+     "lon": 8.4186133,
+     "err_m": 2.5,
+     "src": "slam"
+    },
+    "severity": 75,
+    "confidence": 0.9,
+    "ts": 1790000171,
+    "next": {
+     "id": 17,
+     "dist_m": 0.9,
+     "bearing_deg": 261.5
+    }
+   },
+   "frame": "212a2c000f002c00010006033633741415940405194be6ba110009002b3cb16a4065c0213ed39866637a9679",
+   "detail": "roof sag 45 mm, cracks"
+  },
+  {
+   "id": 45,
+   "event_type": "waypoint",
+   "drop": [
+    17.841,
+    6.151
+   ],
+   "event": [
+    17.841,
+    6.151
+   ],
+   "record": {
+    "beacon_id": 45,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159553,
+     "lon": 8.418594,
+     "err_m": 1.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000193,
+    "next": {
+     "id": 44,
+     "dist_m": 1.7,
+     "bearing_deg": 241.0
+    }
+   },
+   "frame": "212a2d000f002d000100000301337414549304051200ffab2c001100413cb16ac021e010e4b91b321db83be9"
+  },
+  {
+   "id": 46,
+   "event_type": "waypoint",
+   "drop": [
+    9.471,
+    0.55
+   ],
+   "event": [
+    9.471,
+    0.55
+   ],
+   "record": {
+    "beacon_id": 46,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159049,
+     "lon": 8.418503,
+     "err_m": 2.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000238,
+    "next": {
+     "id": 10,
+     "dist_m": 1.3,
+     "bearing_deg": 286.2
+    }
+   },
+   "frame": "212a2e000f002e000100000309317414c68f04051700ffcc0a000d006e3cb16ac021e01080fd70792b073e50"
+  },
+  {
+   "id": 47,
+   "event_type": "waypoint",
+   "drop": [
+    11.991,
+    0.55
+   ],
+   "event": [
+    11.991,
+    0.55
+   ],
+   "record": {
+    "beacon_id": 47,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159049,
+     "lon": 8.4185304,
+     "err_m": 2.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000242,
+    "next": {
+     "id": 46,
+     "dist_m": 2.5,
+     "bearing_deg": 270.0
+    }
+   },
+   "frame": "212a2f000f002f000100000309317414d89004051700ffc02e001900723cb16ac021e010764723082f5a66c0"
+  },
+  {
+   "id": 48,
+   "event_type": "waypoint",
+   "drop": [
+    21.804,
+    1.076
+   ],
+   "event": [
+    21.804,
+    1.076
+   ],
+   "record": {
+    "beacon_id": 48,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159097,
+     "lon": 8.4186371,
+     "err_m": 2.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000257,
+    "next": {
+     "id": 20,
+     "dist_m": 2.2,
+     "bearing_deg": 245.0
+    }
+   },
+   "frame": "212a30000f0030000100000339317414039504051900ffae14001600813cb16ac021e01047e4495afe789745"
+  },
+  {
+   "id": 49,
+   "event_type": "searched",
+   "drop": [
+    21.986,
+    1.149
+   ],
+   "event": [
+    23.0,
+    3.4
+   ],
+   "record": {
+    "beacon_id": 49,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159305,
+     "lon": 8.4186502,
+     "err_m": 3.1,
+     "src": "slam"
+    },
+    "severity": 85,
+    "confidence": 0.9,
+    "ts": 1790000258,
+    "next": {
+     "id": 48,
+     "dist_m": 0.2,
+     "bearing_deg": 248.1
+    }
+   },
+   "frame": "212a31000f00310001000b0309327414869504051f55e6b030000200823cb16ae010d002d50c72a80a1163a3",
+   "detail": "cross-cuts, column 23: searched 85 %, 0 victims found"
+  },
+  {
+   "id": 50,
+   "event_type": "searched",
+   "drop": [
+    21.918,
+    0.238
+   ],
+   "event": [
+    19.6,
+    0.0
+   ],
+   "record": {
+    "beacon_id": 50,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159,
+     "lon": 8.4186132,
+     "err_m": 3.2,
+     "src": "slam"
+    },
+    "severity": 86,
+    "confidence": 0.9,
+    "ts": 1790000265,
+    "next": {
+     "id": 48,
+     "dist_m": 0.8,
+     "bearing_deg": 352.3
+    }
+   },
+   "frame": "212a32000f00320001000b03d8307414149404052056e6fb30000800893cb16ae010d0024586e960df74e7a8",
+   "detail": "main haulage: searched 86 %, 0 victims found"
+  },
+  {
+   "id": 51,
+   "event_type": "phosphate",
+   "drop": [
+    23.009,
+    0.251
+   ],
+   "event": [
+    24.733,
+    1.39
+   ],
+   "record": {
+    "beacon_id": 51,
+    "kind": "PHOSPHATE",
+    "gps": {
+     "lat": 34.3159125,
+     "lon": 8.418669,
+     "err_m": 3.1,
+     "src": "slam"
+    },
+    "severity": 114,
+    "confidence": 0.85,
+    "ts": 1790000266,
+    "next": {
+     "id": 49,
+     "dist_m": 1.4,
+     "bearing_deg": 311.3
+    }
+   },
+   "frame": "212a33000f0033000100080355317414429604051f72d9dd31000e008a3cb16a40ec4065d2760eabcf611487",
+   "detail": "28.6 % P2O5 (rich), layer C II"
+  },
+  {
+   "id": 52,
+   "event_type": "waypoint",
+   "drop": [
+    25.288,
+    0.415
+   ],
+   "event": [
+    25.288,
+    0.415
+   ],
+   "record": {
+    "beacon_id": 52,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159037,
+     "lon": 8.418675,
+     "err_m": 2.6,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000271,
+    "next": {
+     "id": 51,
+     "dist_m": 2.3,
+     "bearing_deg": 265.9
+    }
+   },
+   "frame": "212a34000f00340001000003fd3074147e9604051a00ffbd330017008f3cb16ac021e010fe1b345c2620aa8c"
+  },
+  {
+   "id": 53,
+   "event_type": "victim",
+   "drop": [
+    27.806,
+    0.424
+   ],
+   "event": [
+    30.718,
+    3.604
+   ],
+   "record": {
+    "beacon_id": 53,
+    "kind": "VICTIM",
+    "gps": {
+     "lat": 34.3159324,
+     "lon": 8.4187341,
+     "err_m": 3.7,
+     "src": "slam"
+    },
+    "severity": 60,
+    "confidence": 0.9,
+    "ts": 1790000276,
+    "next": {
+     "id": 52,
+     "dist_m": 2.5,
+     "bearing_deg": 269.8
+    }
+   },
+   "frame": "212a35000f003500010001031c327414cd980405253ce6c034001900943cb16ad00268013b5dc75f3d4fceda",
+   "detail": "body heat 34 C"
+  },
+  {
+   "id": 54,
+   "event_type": "waypoint",
+   "drop": [
+    27.806,
+    0.424
+   ],
+   "event": [
+    27.806,
+    0.424
+   ],
+   "record": {
+    "beacon_id": 54,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159038,
+     "lon": 8.4187024,
+     "err_m": 2.7,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000276,
+    "next": {
+     "id": 53,
+     "dist_m": 0.0,
+     "bearing_deg": 0.0
+    }
+   },
+   "frame": "212a36000f00360001000003fe307414909704051b00ff0035000000943cb16ac021e01010798d908830620e"
+  },
+  {
+   "id": 55,
+   "event_type": "searched",
+   "drop": [
+    28.433,
+    0.572
+   ],
+   "event": [
+    29.8,
+    3.4
+   ],
+   "record": {
+    "beacon_id": 55,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159305,
+     "lon": 8.4187241,
+     "err_m": 3.5,
+     "src": "slam"
+    },
+    "severity": 86,
+    "confidence": 0.9,
+    "ts": 1790000280,
+    "next": {
+     "id": 53,
+     "dist_m": 0.6,
+     "bearing_deg": 256.7
+    }
+   },
+   "frame": "212a37000f00370001000b0309327414699804052356e6b735000600983cb16ae010d002a2148838f2d7932d",
+   "detail": "east gallery, column 30: searched 86 %, 1 victim found"
+  },
+  {
+   "id": 56,
+   "event_type": "searched",
+   "drop": [
+    28.969,
+    -2.239
+   ],
+   "event": [
+    19.6,
+    -6.8
+   ],
+   "record": {
+    "beacon_id": 56,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3158389,
+     "lon": 8.4186132,
+     "err_m": 5.3,
+     "src": "slam"
+    },
+    "severity": 85,
+    "confidence": 0.9,
+    "ts": 1790000284,
+    "next": {
+     "id": 53,
+     "dist_m": 2.9,
+     "bearing_deg": 336.4
+    }
+   },
+   "frame": "212a38000f00380001000b03752e7414149404053555e6ef35001d009c3cb16ae010d002d8ffc9ce94674be4",
+   "detail": "south gallery: searched 85 %, 0 victims found"
+  },
+  {
+   "id": 57,
+   "event_type": "waypoint",
+   "drop": [
+    29.004,
+    -2.552
+   ],
+   "event": [
+    29.004,
+    -2.552
+   ],
+   "record": {
+    "beacon_id": 57,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158771,
+     "lon": 8.4187155,
+     "err_m": 2.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000284,
+    "next": {
+     "id": 56,
+     "dist_m": 0.3,
+     "bearing_deg": 353.6
+    }
+   },
+   "frame": "212a39000f00390001000003f32f7414139804051c00fffb380003009c3cb16ac021e010c88a0ada153e7569"
+  },
+  {
+   "id": 58,
+   "event_type": "gas",
+   "drop": [
+    29.149,
+    -4.225
+   ],
+   "event": [
+    29.789,
+    -6.76
+   ],
+   "record": {
+    "beacon_id": 58,
+    "kind": "GAS",
+    "gps": {
+     "lat": 34.3158393,
+     "lon": 8.418724,
+     "err_m": 3.4,
+     "src": "slam"
+    },
+    "severity": 90,
+    "confidence": 0.9,
+    "ts": 1790000287,
+    "next": {
+     "id": 57,
+     "dist_m": 1.7,
+     "bearing_deg": 355.0
+    }
+   },
+   "frame": "212a3a000f003a0001000203792e741468980405225ae6fc390011009f3cb16a68013c00ab35e2f28ef4dc2b",
+   "detail": "measured 103 ppm CO"
+  },
+  {
+   "id": 59,
+   "event_type": "waypoint",
+   "drop": [
+    29.209,
+    -3.914
+   ],
+   "event": [
+    29.209,
+    -3.914
+   ],
+   "record": {
+    "beacon_id": 59,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158648,
+     "lon": 8.4187177,
+     "err_m": 2.8,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000291,
+    "next": {
+     "id": 58,
+     "dist_m": 0.3,
+     "bearing_deg": 190.9
+    }
+   },
+   "frame": "212a3b000f003b0001000003782f7414299804051c00ff883a000300a33cb16ac021e010e53bbf4421551cdb"
+  },
+  {
+   "id": 60,
+   "event_type": "waypoint",
+   "drop": [
+    28.987,
+    -5.709
+   ],
+   "event": [
+    28.987,
+    -5.709
+   ],
+   "record": {
+    "beacon_id": 60,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158487,
+     "lon": 8.4187153,
+     "err_m": 2.9,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000303,
+    "next": {
+     "id": 58,
+     "dist_m": 1.5,
+     "bearing_deg": 6.2
+    }
+   },
+   "frame": "212a3c000f003c0001000003d72e7414119804051d00ff043a000f00af3cb16ac021e010e41d6a17934219dc"
+  },
+  {
+   "id": 61,
+   "event_type": "waypoint",
+   "drop": [
+    28.133,
+    -5.844
+   ],
+   "event": [
+    28.133,
+    -5.844
+   ],
+   "record": {
+    "beacon_id": 61,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158475,
+     "lon": 8.418706,
+     "err_m": 2.9,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000312,
+    "next": {
+     "id": 60,
+     "dist_m": 0.9,
+     "bearing_deg": 81.0
+    }
+   },
+   "frame": "212a3d000f003d0001000003cb2e7414b49704051d00ff3a3c000900b83cb16ac021e010262b54b12c67cb6a"
+  },
+  {
+   "id": 62,
+   "event_type": "waypoint",
+   "drop": [
+    25.668,
+    -6.728
+   ],
+   "event": [
+    25.668,
+    -6.728
+   ],
+   "record": {
+    "beacon_id": 62,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158396,
+     "lon": 8.4186792,
+     "err_m": 3.0,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000316,
+    "next": {
+     "id": 61,
+     "dist_m": 2.6,
+     "bearing_deg": 70.3
+    }
+   },
+   "frame": "212a3e000f003e00010000037c2e7414a89604051e00ff323d001a00bc3cb16ac021e010058634cd0fe67be3"
+  },
+  {
+   "id": 63,
+   "event_type": "waypoint",
+   "drop": [
+    23.096,
+    -6.593
+   ],
+   "event": [
+    23.096,
+    -6.593
+   ],
+   "record": {
+    "beacon_id": 63,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158408,
+     "lon": 8.4186512,
+     "err_m": 3.0,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000320,
+    "next": {
+     "id": 62,
+     "dist_m": 2.6,
+     "bearing_deg": 93.0
+    }
+   },
+   "frame": "212a3f000f003f0001000003882e7414909504051e00ff423e001a00c03cb16ac021e0100f677e081bb1b0af"
+  },
+  {
+   "id": 64,
+   "event_type": "waypoint",
+   "drop": [
+    24.0,
+    -0.841
+   ],
+   "event": [
+    24.0,
+    -0.841
+   ],
+   "record": {
+    "beacon_id": 64,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158924,
+     "lon": 8.418661,
+     "err_m": 3.1,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000333,
+    "next": {
+     "id": 22,
+     "dist_m": 2.0,
+     "bearing_deg": 233.6
+    }
+   },
+   "frame": "212a40000f004000010000038c307414f29504051f00ffa616001400cd3cb16ac021e010fce535667f0221c5"
+  },
+  {
+   "id": 65,
+   "event_type": "waypoint",
+   "drop": [
+    26.471,
+    -0.438
+   ],
+   "event": [
+    26.471,
+    -0.438
+   ],
+   "record": {
+    "beacon_id": 65,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3158961,
+     "lon": 8.4186879,
+     "err_m": 3.2,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000338,
+    "next": {
+     "id": 64,
+     "dist_m": 2.5,
+     "bearing_deg": 260.7
+    }
+   },
+   "frame": "212a41000f00410001000003b1307414ff9604052000ffb940001900d23cb16ac021e01011e712f3838beb3d"
+  },
+  {
+   "id": 66,
+   "event_type": "waypoint",
+   "drop": [
+    29.232,
+    1.973
+   ],
+   "event": [
+    29.232,
+    1.973
+   ],
+   "record": {
+    "beacon_id": 66,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159177,
+     "lon": 8.4187179,
+     "err_m": 3.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000346,
+    "next": {
+     "id": 55,
+     "dist_m": 1.6,
+     "bearing_deg": 209.7
+    }
+   },
+   "frame": "212a42000f00420001000003893174142b9804052100ff9537001000da3cb16ac021e01036594b84e3a8f57b"
+  },
+  {
+   "id": 67,
+   "event_type": "searched",
+   "drop": [
+    29.213,
+    2.985
+   ],
+   "event": [
+    19.6,
+    6.8
+   ],
+   "record": {
+    "beacon_id": 67,
+    "kind": "SEARCHED",
+    "gps": {
+     "lat": 34.3159611,
+     "lon": 8.4186132,
+     "err_m": 5.9,
+     "src": "slam"
+    },
+    "severity": 85,
+    "confidence": 0.9,
+    "ts": 1790000347,
+    "next": {
+     "id": 66,
+     "dist_m": 1.0,
+     "bearing_deg": 178.9
+    }
+   },
+   "frame": "212a43000f00430001000b033b337414149404053b55e67f42000a00db3cb16ae010d0023e3310d6c1695ae7",
+   "detail": "north gallery: searched 85 %, 0 victims found"
+  },
+  {
+   "id": 68,
+   "event_type": "waypoint",
+   "drop": [
+    29.196,
+    4.581
+   ],
+   "event": [
+    29.196,
+    4.581
+   ],
+   "record": {
+    "beacon_id": 68,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159412,
+     "lon": 8.4187175,
+     "err_m": 3.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000349,
+    "next": {
+     "id": 67,
+     "dist_m": 1.6,
+     "bearing_deg": 179.4
+    }
+   },
+   "frame": "212a44000f0044000100000374327414279804052100ff8043001000dd3cb16ac021e010e061b7e244033957"
+  },
+  {
+   "id": 69,
+   "event_type": "waypoint",
+   "drop": [
+    28.818,
+    5.552
+   ],
+   "event": [
+    28.818,
+    5.552
+   ],
+   "record": {
+    "beacon_id": 69,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159499,
+     "lon": 8.4187134,
+     "err_m": 3.3,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000352,
+    "next": {
+     "id": 68,
+     "dist_m": 1.0,
+     "bearing_deg": 158.7
+    }
+   },
+   "frame": "212a45000f00450001000003cb327414fe9704052100ff7144000a00e03cb16ac021e0107b81b91ffa06a2aa"
+  },
+  {
+   "id": 70,
+   "event_type": "waypoint",
+   "drop": [
+    28.053,
+    5.933
+   ],
+   "event": [
+    28.053,
+    5.933
+   ],
+   "record": {
+    "beacon_id": 70,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159533,
+     "lon": 8.4187051,
+     "err_m": 3.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000362,
+    "next": {
+     "id": 69,
+     "dist_m": 0.9,
+     "bearing_deg": 116.5
+    }
+   },
+   "frame": "212a46000f00460001000003ed327414ab9704052200ff5345000900ea3cb16ac021e010adc9894532d14386"
+  },
+  {
+   "id": 71,
+   "event_type": "waypoint",
+   "drop": [
+    25.445,
+    6.195
+   ],
+   "event": [
+    25.445,
+    6.195
+   ],
+   "record": {
+    "beacon_id": 71,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159557,
+     "lon": 8.4186767,
+     "err_m": 3.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000366,
+    "next": {
+     "id": 70,
+     "dist_m": 2.6,
+     "bearing_deg": 95.7
+    }
+   },
+   "frame": "212a47000f00470001000003053374148f9604052200ff4446001a00ee3cb16ac021e010f3090ce1b0212e2a"
+  },
+  {
+   "id": 72,
+   "event_type": "waypoint",
+   "drop": [
+    24.021,
+    6.523
+   ],
+   "event": [
+    24.021,
+    6.523
+   ],
+   "record": {
+    "beacon_id": 72,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159586,
+     "lon": 8.4186613,
+     "err_m": 3.4,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000377,
+    "next": {
+     "id": 71,
+     "dist_m": 1.5,
+     "bearing_deg": 103.0
+    }
+   },
+   "frame": "212a48000f0048000100000322337414f59504052200ff4947000f00f93cb16ac021e01033ba6635417d59c8"
+  },
+  {
+   "id": 73,
+   "event_type": "waypoint",
+   "drop": [
+    23.771,
+    5.777
+   ],
+   "event": [
+    23.771,
+    5.777
+   ],
+   "record": {
+    "beacon_id": 73,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159519,
+     "lon": 8.4186585,
+     "err_m": 3.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000378,
+    "next": {
+     "id": 72,
+     "dist_m": 0.8,
+     "bearing_deg": 18.5
+    }
+   },
+   "frame": "212a49000f00490001000003df327414d99504052300ff0d48000800fa3cb16ac021e0107a6b99d5ca66afdc"
+  },
+  {
+   "id": 74,
+   "event_type": "waypoint",
+   "drop": [
+    23.425,
+    3.173
+   ],
+   "event": [
+    23.425,
+    3.173
+   ],
+   "record": {
+    "beacon_id": 74,
+    "kind": "WAYPOINT",
+    "gps": {
+     "lat": 34.3159285,
+     "lon": 8.4186548,
+     "err_m": 3.5,
+     "src": "slam"
+    },
+    "severity": 0,
+    "confidence": 1.0,
+    "ts": 1790000382,
+    "next": {
+     "id": 73,
+     "dist_m": 2.6,
+     "bearing_deg": 7.6
+    }
+   },
+   "frame": "212a4a000f004a0001000003f5317414b49504052300ff0549001a00fe3cb16ac021e0104b91586565b82f43"
+  }
+ ]
+}

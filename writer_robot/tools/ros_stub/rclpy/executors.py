@@ -1,0 +1,2 @@
+class ExternalShutdownException(Exception):
+    pass

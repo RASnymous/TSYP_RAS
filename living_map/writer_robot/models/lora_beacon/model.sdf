@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!-- A LoRa beacon capsule dropped by the Writer Robot.
+     STATIC and VISUAL-ONLY (no collision): a beacon can never push, block or
+     lift the robot, even when it drives back over its own trail. Everything
+     is below 0.17 m, under the LiDAR's scan plane (0.34 m), so beacons never
+     show up as obstacles in the map. Colours are outside every hazard colour
+     gate of the vision node (green body, BLUE status LED). -->
+<sdf version="1.6">
+  <model name="lora_beacon">
+    <static>true</static>
+    <link name="link">
+      <!-- main body: bright-green box resting on the ground -->
+      <visual name="visual">
+        <pose>0 0 0.04 0 0 0</pose>
+        <geometry><box><size>0.14 0.10 0.08</size></box></geometry>
+        <material>
+          <ambient>0.0 0.9 0.2 1</ambient>
+          <diffuse>0.1 1.0 0.3 1</diffuse>
+          <emissive>0.0 0.8 0.2 1</emissive>
+        </material>
+      </visual>
+
+      <!-- short antenna (top at 0.16 m) -->
+      <visual name="antenna">
+        <pose>0.05 0 0.12 0 0 0</pose>
+        <geometry><cylinder><radius>0.004</radius><length>0.08</length></cylinder></geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- glowing BLUE status LED on top -->
+      <visual name="led">
+        <pose>-0.03 0 0.095 0 0 0</pose>
+        <geometry><sphere><radius>0.02</radius></sphere></geometry>
+        <material>
+          <ambient>0.1 0.3 1.0 1</ambient>
+          <diffuse>0.1 0.3 1.0 1</diffuse>
+          <emissive>0.0 0.2 1.0 1</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

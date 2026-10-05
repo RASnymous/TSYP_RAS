@@ -1,0 +1,40 @@
+
+================ sim2d report ================
+ world            : gafsa_mine.world  (24 boxes, 5 hazards, 5 resources)
+ simulated time   : 7.7 min   (computed in 20 s)
+ distance driven  : 195 m
+ map known area   : 333 m2
+ plans            : 93  (slowest planning step 147 ms)
+ retreats         : 3
+   radon_deadend        first seen at 0.4 min from 2.8 m   closest after seeing it 2.75 m   closest ever 2.75 m
+   bad_air_east         first seen at 4.8 min from 2.5 m   closest after seeing it 2.48 m   closest ever 2.48 m
+   fire_loader          first seen at 4.8 min from 7.6 m   closest after seeing it 1.29 m   closest ever 1.29 m
+   roof_north           first seen at 2.8 min from 3.5 m   closest after seeing it 3.40 m   closest ever 3.40 m
+   miner_1              first seen at 3.6 min from 4.2 m   closest after seeing it 1.21 m   closest ever 1.21 m
+ time per state   : follow 5.9 min, look 0.9 min, plan 0.3 min, retreat 0.4 min, home 0.1 min, done 0.2 min
+ final state      : DONE - EXPLORATION COMPLETE - stopped at start
+   seam_rich            marked at 3.4 min: 29.1 % P2O5 (rich), layer C II
+   seam_medium          marked at 1.3 min: 25.4 % P2O5 (medium), layer C V-VI
+   seam_poor            marked at 0.0 min: 17.5 % P2O5 (poor), layer C VII
+   gold_demo            marked at 1.7 min: gold (Au) signal on XRF - demonstration target
+   gem_demo             marked at 2.7 min: crystal on camera, XRF to confirm - demonstration target
+   Z1 access drift              100 % seen, searched at 0.2 min
+   Z2 dead-end gallery          100 % seen, searched at 0.3 min
+   Z3 north gallery             100 % seen, searched at 3.7 min
+   Z4 main haulage              100 % seen, searched at 3.3 min
+   Z5 south gallery              99 % seen, searched at 4.7 min
+   Z6 cross-cuts, column 9      100 % seen, searched at 1.7 min
+   Z7 cross-cuts, column 16     100 % seen, searched at 1.2 min
+   Z8 cross-cuts, column 23     100 % seen, searched at 4.4 min
+   Z9 east gallery, column 30   100 % seen, searched at 5.9 min, 1 victim(s)
+
+ CHECKS
+  [PASS] no collision (0 blocked moves)
+  [PASS] never within 0.9 m of a hazard centre after spotting it
+  [PASS] every hazard spotted (5/5)
+  [PASS] victim search: every area searched (9/9)
+  [PASS] every resource found: phosphate seams and finds (5/5)
+  [PASS] never stood still for long (longest 1.6 s)
+  [PASS] exploration completed (no reachable frontier left)
+  [PASS] back at the start and stopped
+ RESULT: ALL CHECKS PASSED

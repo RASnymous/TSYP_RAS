@@ -1,0 +1,14 @@
+{
+  "name": "ONA-1 (bpsim)",
+  "key": "demo",
+  "net_id": 42,
+  "quorum": 2,
+  "command_post": "http://localhost:3000",
+  "anchor": {"lat": 34.43, "lon": 8.783, "alt": 300.0, "map_yaw_deg": 0.0},
+  "gateways": {
+    "gw1": {"local": [-4.0, 0.0, 2.0], "note": "bpsim: at the entrance"},
+    "gw2": {"local": [-6.0, -5.0, 2.0], "note": "bpsim: south of the entrance"},
+    "gw3": {"local": [-7.0, 4.0, 2.0], "note": "bpsim: north of the entrance"}
+  },
+  "unconfirmed_hold_s": 4.0
+}
